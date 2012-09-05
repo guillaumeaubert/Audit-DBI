@@ -54,6 +54,34 @@ sub integer_to_ipv4
 }
 
 
+=head2 ipv4_to_integer()
+
+Convert an IPv4 address to a 32-bit integer.
+
+	my $integer = Audit::DBI::Utils::ipv4_to_integer( $ip_address );
+
+=cut
+
+sub ipv4_to_integer
+{
+	my ( $ip_address ) = @_;
+	
+	return undef
+		if !defined( $ip_address );
+	
+	if ( my ( @bytes ) = $ip_address =~ m/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/x )
+	{
+		if ( ! grep { $_ > 255 } @bytes )
+		{
+			return unpack( "L", reverse Socket::inet_aton( $ip_address ) );
+		}
+	}
+	
+	# Invalid input.
+	return undef;
+}
+
+
 =head1 AUTHOR
 
 Guillaume Aubert, C<< <aubertg at cpan.org> >>.
