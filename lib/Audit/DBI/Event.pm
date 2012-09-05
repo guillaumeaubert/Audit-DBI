@@ -73,6 +73,24 @@ sub id
 }
 
 
+=head2 get_information()
+
+Retrieve the extra information stored, if any.
+
+	my $information = $self->get_information();
+
+=cut
+
+sub get_information
+{
+	my ( $self ) = @_;
+	
+	return defined( $self->{'information'} )
+		? Storable::thaw( MIME::Base64::decode_base64( $self->{'information'} ) )
+		: undef;
+}
+
+
 =head1 AUTHOR
 
 Guillaume Aubert, C<< <aubertg at cpan.org> >>.
