@@ -30,6 +30,32 @@ our $VERSION = '1.4.0';
 
 =head1 METHODS
 
+=head2 new()
+
+Create a new Audit::DBI::Event object.
+
+	my $audit_event = Audit::DBI::Event->new(
+		data => $data, #mandatory
+	);
+
+Note that you should never have to instantiate Audit::DBI::Event objects
+directly. They are normally created by the Audit::DBI module.
+
+=cut
+
+sub new
+{
+	my ( $class, %args ) = @_;
+	my $data = delete( $args{'data'} );
+	
+	croak 'The parameter "data" is mandatory'
+		if !defined( $data );
+	croak 'The parameter "data" must be a hashref'
+		if !Data::Validate::Type::is_hashref( $data );
+	
+	return bless( $data, $class );
+}
+
 
 =head1 AUTHOR
 
