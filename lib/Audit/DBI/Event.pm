@@ -109,6 +109,22 @@ sub get_diff
 }
 
 
+=head2 get_ipv4_address()
+
+Return the IPv4 address associated with the audit event.
+
+	my $ipv4_address = $audit_event->get_ipv4_address();
+
+=cut
+
+sub get_ipv4_address
+{
+	my ( $self ) = @_;
+	
+	return Audit::DBI::Utils::integer_to_ipv4( $self->{'ipv4_address'} );
+}
+
+
 =head1 AUTHOR
 
 Guillaume Aubert, C<< <aubertg at cpan.org> >>.
