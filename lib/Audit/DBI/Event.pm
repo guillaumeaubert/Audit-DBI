@@ -91,6 +91,24 @@ sub get_information
 }
 
 
+=head2 get_diff()
+
+Retrieve the diff information stored, if any.
+
+	my $diff = $self->get_diff();
+
+=cut
+
+sub get_diff
+{
+	my ( $self ) = @_;
+	
+	return defined( $self->{'diff'} )
+		? Storable::thaw( MIME::Base64::decode_base64( $self->{'diff'} ) )
+		: undef;
+}
+
+
 =head1 AUTHOR
 
 Guillaume Aubert, C<< <aubertg at cpan.org> >>.
