@@ -35,6 +35,24 @@ our $VERSION = '1.4.0';
 
 =head1 FUNCTIONS
 
+=head2 integer_to_ipv4()
+
+Convert a 32-bits integer representing an IP address into its IPv4 form.
+
+	my $ip_address = Audit::DBI::Utils::integer_to_ipv4( $integer );
+
+=cut
+
+sub integer_to_ipv4
+{
+	my ( $integer ) = @_;
+	
+	return undef
+		if !defined( $integer ) || $integer !~ m/^\d+$/;
+	
+	return join( '.', map { ( $integer >> 8 * ( 3 - $_ ) ) % 256 } 0..3 );
+}
+
 
 =head1 AUTHOR
 
