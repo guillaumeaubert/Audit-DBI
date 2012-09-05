@@ -1,0 +1,44 @@
+Audit-DBI
+
+Audit data changes in your code and store searchable log records in a database.
+
+INSTALLATION
+
+To install this module, run the following commands:
+
+	perl Build.PL
+	./Build
+	./Build test
+	./Build install
+
+SUPPORT AND DOCUMENTATION
+
+After installing, you can find documentation for this module with the
+perldoc command.
+
+    perldoc Audit::DBI
+
+You can also look for information at:
+
+    RT, CPAN's request tracker (report bugs here)
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Audit-DBI
+
+    AnnoCPAN, Annotated CPAN documentation
+        http://annocpan.org/dist/Audit-DBI
+
+    CPAN Ratings
+        http://cpanratings.perl.org/d/Audit-DBI
+
+    Search CPAN
+        http://search.cpan.org/dist/Audit-DBI/
+
+
+LICENSE AND COPYRIGHT
+
+Copyright (C) 2010-2012 Guillaume Aubert
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the Artistic License.
+
+See http://dev.perl.org/licenses/ for more information.
+
