@@ -57,6 +57,22 @@ sub new
 }
 
 
+=head2 id()
+
+Return the audit event ID.
+
+	my $audit_event_id = $self->id()
+
+=cut
+
+sub id
+{
+	my ( $self ) = @_;
+	
+	return $self->{'audit_event_id'};
+}
+
+
 =head1 AUTHOR
 
 Guillaume Aubert, C<< <aubertg at cpan.org> >>.
