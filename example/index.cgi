@@ -56,9 +56,30 @@ my $template = Template->new(
 
 # Actions
 my $action = $cgi->param('action') || '';
+{
+	search();
+}
 
 
 =head1 FUNCTIONS
+
+
+=head2 search()
+
+Displays a search interface to query audit data.
+
+=cut
+
+sub search
+{
+	# Output the template.
+	$template->process(
+		'search.tt2',
+		{},
+	) || die $template->error();
+	
+	return;
+}
 
 
 =head1 COPYRIGHT & LICENSE
