@@ -1,0 +1,175 @@
+[% WRAPPER wrapper.tt2 page_title='Search Results' %]
+	
+	<h1>
+		Audit :: Search Results
+	</h1>
+	
+	<p>&nbsp;</p>
+	
+	[% IF need_at_least_one_criteria %]
+		<p>
+			Please select at least one criteria to search on.
+		</p>
+	[% ELSE %]
+		<style>
+			.code {
+				min-width: 400px;
+			}
+			.code div {
+				font-family: monospace;
+				border: 1px solid #257025;
+				margin-top: 3px;
+				display: none;
+			}
+			#results {
+				font-family: Lucida, Helvetica, Sans-Serif;
+				font-size: 8pt;
+			}
+			#results td {
+				border-right: 1px solid lightgrey;
+				vertical-align: top;
+			}
+			#results th {
+				border-bottom: 1px solid black;
+			}
+		</style>
+		<script>
+			window.onload = function() {
+				// Search all the links in code columns
+				jQuery.each(
+					$('#results .code a'),
+					function() {
+						// Activate toggling
+						$(this).click(
+							function() {
+								$(this).parent().find('div').toggle();
+								return false;
+							}
+						);
+					}
+				);
+				
+				// Activate toggling all
+				$('#toggle_all').click(
+					function() {
+						jQuery.each(
+							$('#results .code div'),
+							function() {
+								$(this).toggle();
+							}
+						);
+						return false;
+					}
+				);
+			}
+		</script>
+	
+		<p>
+			Found: [% found %] results.
+			<a href="[% refine_url %]">Refine search results</a>
+			-
+			<a href="Javascript:return;" id="toggle_all">Toggle all</a>
+		</p>
+		<p>&nbsp;</p>
+		
+		<table cellspacing="0" cellpadding="4" align="center" class="block" id="results">
+			<thead>
+				<tr bgcolor="lightgrey">
+					<th width="50">
+						<p class="smallhdr">ID</p>
+					</th>
+					<th width="75">
+						<p class="smallhdr">Date</p>
+					</th>
+					<th width="120">
+						<p class="smallhdr">Event</p>
+					</th>
+					<th width="120">
+						<p class="smallhdr">Subject Type</p>
+					</th>
+					<th width="75">
+						<p class="smallhdr">Subject ID</p>
+					</th>
+					<th>
+						<p class="smallhdr">Diff</p>
+					</th>
+					<th>
+						<p class="smallhdr">Context</p>
+					</th>
+					<th width="100">
+						<p class="smallhdr">Account<br/>Logged In</p>
+					</th>
+					<th width="100">
+						<p class="smallhdr">Account<br/>Affected</p>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				[%
+					i = 0;
+					USE audit;
+					FOREACH result IN audit.format_results( results );
+						i = i + 1;
+						IF i % 2;
+							class = 'odd';
+						ELSE;
+							class = 'even';
+						END;
+				%]
+					<tr class="[% class %]">
+						<td>
+							[% result.audit_event_id %]
+						</td>
+						<td>
+							[% result.event_time_formatted %]
+						</td>
+						<td>
+							[% result.event %]
+						</td>
+						<td>
+							[% result.subject_type %]
+						</td>
+						<td>
+							[% result.subject_id %]
+						</td>
+						<td class="code">
+							[% IF result.diff != '' %]
+								<a href="Javascript:return;">(toggle)</a>
+								<div>
+									[% result.diff_formatted %]
+								</div>
+							[% ELSE %]
+								-
+							[% END %]
+						</td>
+						<td class="code">
+							[% IF result.information != '' %]
+								<a href="Javascript:return;">(toggle)</a>
+								<div>
+									[% result.information_formatted %]
+								</div>
+							[% ELSE %]
+								-
+							[% END %]
+						</td>
+						<td>
+							[% IF result.logged_in_account_id != '' %]
+								[% result.logged_in_account_id %]
+							[% ELSE %]
+								-
+							[% END %]
+						</td>
+						<td>
+							[% IF result.affected_account_id != '' %]
+								[% result.affected_account_id %]
+							[% ELSE %]
+								-
+							[% END %]
+						</td>
+					</tr>
+				[% END %]
+			</tbody>
+		</table>
+	[% END %]
+	
+[% END %]
