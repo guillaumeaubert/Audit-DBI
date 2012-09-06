@@ -52,6 +52,56 @@ sub new
 }
 
 
+=head2 format_results()
+
+Format the following fields for display as HTML:
+
+=over 4
+
+=item * diff
+
+(accessible as diff_formatted)
+
+=item * information
+
+(accessible as information_formatted)
+
+=item * event_time
+
+(accessible as event_time_formatted)
+
+=back
+
+	[% FOREACH result IN audit.format_results( results ) %]
+		<div>
+			Formatted information: [% result.information_formatted %]<br/>
+			Formatted diff: [% result.diff_formatted %]<br/>
+			Formatted event time: [% result.event_time_formatted %]
+		</div>
+	[% END %]
+
+=cut
+
+sub format_results
+{
+	my ( $self ) = @_;
+	my $results = $self->{'_CONTEXT'}->{'STASH'}->{'results'} || [];
+	
+	local $Class::Date::DATE_FORMAT="%Y-%m-%d %H:%M:%S";
+	
+	foreach my $result ( @$results )
+	{
+		$result->{information_formatted} = html_dumper( $result->get_information() );
+		$result->{diff_formatted} = html_dumper( $result->get_diff() );
+		my $event_date = Class::Date::date( $result->{event_time} );
+		$result->{event_time_formatted} = $event_date->string()
+			if defined( $event_date );
+	}
+	
+	return $results;
+}
+
+
 =head1 AUTHOR
 
 Guillaume Aubert, C<< <aubertg at cpan.org> >>.
