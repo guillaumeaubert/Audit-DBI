@@ -31,6 +31,26 @@ our $VERSION = '1.4.0';
 
 =head1 FUNCTIONS
 
+=head2 new()
+
+Create a new Audit::DBI::TT2 object.
+
+=cut
+
+sub new
+{
+	my ( $class, $context ) = @_;
+	
+	my $self = bless(
+		{
+			_CONTEXT => $context,
+		},
+		$class,
+	);
+	
+	return $self;
+}
+
 
 =head1 AUTHOR
 
