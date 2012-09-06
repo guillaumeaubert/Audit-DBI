@@ -1025,6 +1025,9 @@ Thanks to ThinkGeek (L<http://www.thinkgeek.com/>) and its corporate overlords
 at Geeknet (L<http://www.geek.net/>), for footing the bill while I write code
 for them!
 
+Thanks to Nathan Gray (KOLIBRIE) for implementing rate limiting in record()
+calls in v1.3.0.
+
 
 =head1 COPYRIGHT & LICENSE
 
