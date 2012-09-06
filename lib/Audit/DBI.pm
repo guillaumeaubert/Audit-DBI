@@ -58,6 +58,52 @@ our $VERSION = '1.4.0';
 
 =head1 METHODS
 
+=head2 new()
+
+Create a new Audit::DBI object.
+
+	my $audit = Audit::DBI->new(
+		database_handle => $dbh,
+	);
+
+Parameters:
+
+=over 4
+
+=item * 'database handle'
+
+Mandatory, a DBI object.
+
+=item * 'memcache'
+
+Optional, a Cache::Memcached or Cache::Memcached::Fast object to use for
+rate limiting. If not specified, rate-limiting functions will not be available.
+
+=back
+
+=cut
+
+sub new
+{
+	my ( $class, %args ) = @_;
+	my $dbh = delete( $args{'database_handle'} );
+	my $memcache = delete( $args{'memcache'} );
+
+	# Check parameters.
+	croak "Argument 'database_handle' is mandatory and must be a DBI object"
+		if !Data::Validate::Type::is_instance( $dbh, class => 'DBI::db' );
+
+	my $self = bless(
+		{
+			'database_handle' => $dbh,
+			'memcache'        => $memcache,
+		},
+		$class
+	);
+
+	return $self;
+}
+
 
 =head1 AUTHOR
 
