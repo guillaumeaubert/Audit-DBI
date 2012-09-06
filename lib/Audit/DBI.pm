@@ -641,6 +641,116 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 }
 
 
+=head2 create_tables()
+
+Create the tables required to store audit events.
+
+	$audit->create_tables(
+		drop_if_exist => $boolean,      #default 0
+		database_type => $database_type #default SQLite
+	);
+
+=cut
+
+sub create_tables
+{
+	my ( $self, %args ) = @_;
+	my $drop_if_exist = delete( $args{'drop_if_exist'} );
+	croak 'Invalid argument(s): ' . join( ', ', keys %args )
+		if scalar( keys %args );
+	
+	# Defaults.
+	$drop_if_exist = 0
+		unless defined( $drop_if_exist ) && $drop_if_exist;
+	
+	# Check database type.
+	my $database_handle = $self->get_database_handle();
+	my $database_type = $database_handle->{'Driver'}->{'Name'};
+	croak 'This database type is not supported yet. Please email the maintainer of the module for help.'
+		if $database_type !~ m/^(?:SQLite|MySQL)$/;
+	
+	# Create the table that will hold the audit records.
+	$database_handle->do( q|DROP TABLE IF EXISTS audit_events| )
+		if $drop_if_exist;
+	$database_handle->do(
+		$database_type eq 'SQLite'
+			? q|
+				CREATE TABLE audit_events (
+					audit_event_id INTEGER PRIMARY KEY AUTOINCREMENT,
+					logged_in_account_id varchar(48) default NULL,
+					affected_account_id varchar(48) default NULL,
+					event varchar(48) default NULL,
+					event_time int(10) default NULL,
+					subject_type varchar(48) default NULL,
+					subject_id varchar(255) default NULL,
+					diff text,
+					information text,
+					ipv4_address int(10) default NULL,
+					created int(10) NOT NULL,
+					file varchar(32) NOT NULL default '',
+					line smallint(5) NOT NULL default '0'
+				)
+			|
+			: q|
+				CREATE TABLE audit_events (
+					audit_event_id int(10) unsigned NOT NULL auto_increment,
+					logged_in_account_id varchar(48) default NULL,
+					affected_account_id varchar(48) default NULL,
+					event varchar(48) default NULL,
+					event_time int(10) unsigned default NULL,
+					subject_type varchar(48) default NULL,
+					subject_id varchar(255) default NULL,
+					diff text,
+					information text,
+					ipv4_address int(10) unsigned default NULL,
+					created int(10) unsigned NOT NULL,
+					file varchar(32) NOT NULL default '',
+					line smallint(5) unsigned NOT NULL default '0',
+					PRIMARY KEY  (audit_event_id),
+					KEY idx_event (event),
+					KEY idx_event_time (event_time),
+					KEY idx_ip_address (ip_address),
+					KEY idx_file_line (file,line),
+					KEY idx_logged_in_account_id (logged_in_account_id(8)),
+					KEY idx_affected_account_id (affected_account_id(8)),
+					KEY idx_subject (subject_type(6),subject_id(12))
+				)
+				ENGINE=InnoDB
+			|
+	);
+
+	# Create the table that will hold the audit search index.
+	$database_handle->do( q|DROP TABLE IF EXISTS audit_search| )
+		if $drop_if_exist;
+	$database_handle->do(
+		$database_type eq 'SQLite'
+			? q|
+				CREATE TABLE audit_search (
+					audit_search_id INTEGER PRIMARY KEY AUTOINCREMENT,
+					audit_event_id int(10) NOT NULL,
+					name varchar(48) default NULL,
+					value varchar(255) default NULL
+				)
+			|
+			: q|
+				CREATE TABLE audit_search (
+					audit_search_id int(10) unsigned NOT NULL auto_increment,
+					audit_event_id int(10) unsigned NOT NULL,
+					name varchar(48) default NULL,
+					value varchar(255) default NULL,
+					PRIMARY KEY  (audit_search_id),
+					KEY idx_name (name),
+					KEY idx_value (value),
+					CONSTRAINT audit_event_id_ibfk_1 FOREIGN KEY (audit_event_id) REFERENCES audit_events (audit_event_id)
+				)
+				ENGINE=InnoDB
+			|
+	);
+
+	return;
+}
+
+
 =head1 ACCESSORS
 
 =head2 get_database_handle()
