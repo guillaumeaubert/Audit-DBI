@@ -245,6 +245,402 @@ sub record ## no critic (NamingConventions::ProhibitAmbiguousNames)
 }
 
 
+=head2 review()
+
+Return the logged audit events corresponding to the criteria passed as
+parameter.
+
+	my $results = $audit->review(
+		ip_ranges   =>
+		[
+			{
+				include => $boolean,
+				begin   => $begin,
+				end     => $end
+			},
+			...
+		],
+		subjects    =>
+		[
+			{
+				include => $boolean,
+				type    => $type1,
+				ids     => \@id1,
+			},
+			{
+				include => $boolean,
+				type    => $type2,
+				ids     => \@id2,
+			},
+			...
+		],
+		date_ranges =>
+		[
+			{
+				include => $boolean,
+				begin   => $begin,
+				end     => $end
+			},
+			...
+		],
+		values      =>
+		[
+			{
+				include => $boolean,
+				name    => $name1,
+				values  => \@value1,
+			},
+			{
+				include => $boolean,
+				name    => $name2,
+				values  => \@value2,
+			},
+			...
+		],
+		events      =>
+		[
+			{
+				include => $boolean,
+				event   => $event,
+			},
+			...
+		],
+		logged_in   =>
+		[
+			{
+				include    => $boolean,
+				account_id => $account_id,
+			},
+			...
+		],
+		affected    =>
+		[
+			{
+				include    => $boolean,
+				account_id => $account_id,
+			},
+			...
+		],
+	);
+
+All the parameters are optional, but at least one of them is required due to the
+sheer volume of data this module tends to generate. If multiple parameters are
+passed, they are additive, i.e. use AND to combine themselves.
+
+=over 4
+
+=item * ip_ranges
+
+Allows restricting the search to ranges of IPs. Must be given in integer format.
+
+=item * events
+
+Allows searching on specific events.
+
+=item * subjects
+
+Allows to search on the subject types and subject IDs passed when calling
+record(). Multiple subject types can be passed, and for each subject type
+multiple IDs can be passed, hence the use of an arrayref of hashes for this
+parameter. Using
+
+	[
+		{
+			type => $type1,
+			ids  => \@id1,
+		},
+		{
+			type => $type2,
+			ids  => \@id2,
+		}
+	]
+
+would translate into
+
+(subject_type = '[type1]' AND subject_id IN([ids1]) )
+	OR (subject_type = '[type2]' AND subject_id IN([ids2]) )
+
+for searching purposes.
+
+=item * date_ranges
+
+Allows restricting the search to specific date ranges.
+
+=item * values
+
+Searches on the key/values pairs initially passed via 'search_data' to record().
+
+=item * logged_in
+
+Searches on the ID of the account that was logged in at the time of the record()
+call.
+
+=item * affected
+
+Searches on the ID of the account that was linked to the data that changed at
+the time of the record() call.
+
+=back
+
+=cut
+
+sub review ## no critic (Subroutines::ProhibitExcessComplexity)
+{
+	my ( $self, %args ) = @_;
+	my $subjects = delete( $args{'subjects'} );
+	my $values = delete( $args{'values'} );
+	my $ip_ranges = delete( $args{'ip_ranges'} );
+	my $date_ranges = delete( $args{'date_ranges'} );
+	my $events = delete( $args{'events'} );
+	my $logged_in = delete( $args{'logged_in'} );
+	my $affected = delete( $args{'affected'} );
+	
+	### CLEAN PARAMETERS
+	
+	# Check that subjects are defined correctly.
+	if ( defined( $subjects ) )
+	{
+		croak 'The parameter "subjects" must be an arrayref'
+			if !Data::Validate::Type::is_arrayref( $subjects );
+		
+		foreach my $subject ( @$subjects )
+		{
+			croak 'The subject type must be defined'
+				if !defined( $subject->{'type'} );
+			
+			croak 'The inclusion/exclusion flag must be defined'
+				if !defined( $subject->{'include'} );
+			
+			croak 'If defined, the IDs for a given subject time must be in an array'
+				if defined( $subject->{'ids'} ) && !Data::Validate::Type::is_arrayref( $subject->{'ids'} );
+		}
+	}
+	
+	# Check that values are defined correctly.
+	if ( defined( $values ) )
+	{
+		croak 'The parameter "values" must be an arrayref'
+			if !Data::Validate::Type::is_arrayref( $values );
+		
+		foreach my $value ( @$values )
+		{
+			croak 'The name must be defined'
+				if !defined( $value->{'name'} );
+			
+			croak 'The inclusion/exclusion flag must be defined'
+				if !defined( $value->{'include'} );
+			
+			croak 'The values for a given name must be in an arrayref'
+				if !defined( $value->{'values'} ) || !Data::Validate::Type::is_arrayref( $value->{'values'} );
+		}
+	}
+	
+	# Check that the IP ranges are defined correctly
+	if ( defined( $ip_ranges ) )
+	{
+		croak 'The parameter "ip_ranges" must be an arrayref'
+			if !Data::Validate::Type::is_arrayref( $ip_ranges );
+		
+		foreach my $ip_range ( @$ip_ranges )
+		{
+			croak 'The inclusion/exclusion flag must be defined'
+				if !defined( $ip_range->{'include'} );
+			
+			croak 'The lower bound of the IP range must be defined'
+				if !defined( $ip_range->{'begin'} );
+			
+			croak 'The higher bound of the IP range must be defined'
+				if !defined( $ip_range->{'end'} );
+		}
+	}
+	
+	# Check that the date range is defined correctly
+	if ( defined( $date_ranges ) )
+	{
+		croak 'The parameter "date_ranges" must be an arrayref'
+			if !Data::Validate::Type::is_arrayref( $date_ranges );
+		
+		foreach my $date_range ( @$date_ranges )
+		{
+			croak 'The inclusion/exclusion flag must be defined'
+				if !defined( $date_range->{'include'} );
+			
+			croak 'The lower bound of the date range must be defined'
+				if !defined( $date_range->{'begin'} );
+			
+			croak 'The higher bound of the date range must be defined'
+				if !defined( $date_range->{'end'} );
+		}
+	}
+	
+	### PREPARE THE QUERY
+	my @clause = ();
+	my @join = ();
+	my $dbh = $self->get_database_handle();
+	
+	# Filter by IP range.
+	if ( defined( $ip_ranges ) )
+	{
+		my @or_clause = ();
+		foreach my $ip_range ( @$ip_ranges )
+		{
+			my $begin = $dbh->quote( $ip_range->{'begin'} );
+			my $end = $dbh->quote( $ip_range->{'end'} );
+			my $clause = "((ipv4_address >= $begin) AND (ipv4_address <= $end))";
+			
+			$clause = "(NOT $clause)"
+				if !$ip_range->{'include'};
+			
+			push( @or_clause, $clause );
+		}
+		
+		push( @clause, '(' . join( ') OR (', @or_clause ) . ')' )
+			if scalar( @or_clause ) != 0;
+	}
+	
+	# Filter by subject_type and subject_id.
+	if ( defined( $subjects ) )
+	{
+		my @or_clause = ();
+		foreach my $subject ( @$subjects )
+		{
+			my $clause = '(subject_type = ' . $dbh->quote( $subject->{'type'} ) . ')';
+
+			$clause = "($clause AND (subject_id IN (" . join( ',', map { $dbh->quote( $_ ) } @{ $subject->{'ids'} } ) . ')))'
+				if defined( $subject->{'ids'} ) && ( scalar( @{ $subject->{'ids'} } ) != 0 );
+			
+			$clause = "(NOT $clause)"
+				if !$subject->{'include'};
+			
+			push( @or_clause, $clause );
+		}
+		
+		push( @clause, '(' . join( ') OR (', @or_clause ) . ')' )
+			if scalar( @or_clause ) != 0;
+	}
+	
+	# Filter using the manually set key/value pairs.
+	if ( defined( $values ) )
+	{
+		my @or_clause = ();
+		foreach my $value ( @$values )
+		{
+			my $clause = '(name = ' . $dbh->quote( lc( $value->{'name'} ) ) . ')';
+			
+			$clause = "($clause AND (value IN (" . join( ',', map { $dbh->quote( lc( $value ) ) } @{ $value->{'values'} } ) . ')))'
+				if defined( $value->{'values'} ) && ( scalar( @{ $value->{'values'} } ) != 0 );
+			
+			$clause = "(NOT $clause)"
+				if !$value->{'include'};
+			
+			push( @or_clause, $clause );
+		}
+		
+		if ( scalar( @or_clause ) != 0 )
+		{
+			push( @join, 'LEFT JOIN audit_search USING(audit_event_id)' );
+			push( @clause, '(' . join( ') OR (', @or_clause ) . ')' );
+		}
+	}
+	
+	# Filter by date range.
+	if ( defined( $date_ranges ) )
+	{
+		my @or_clause = ();
+		foreach my $date_range ( @$date_ranges )
+		{
+			my $begin = $dbh->quote( $date_range->{'begin'} );
+			my $end = $dbh->quote( $date_range->{'end'} );
+			my $clause = "((event_time >= $begin) AND (event_time <= $end))";
+			
+			$clause = "(NOT $clause)"
+				if !$date_range->{'include'};
+			
+			push( @or_clause, $clause );
+		}
+		
+		push( @clause, '(' . join( ') OR (', @or_clause ) . ')' )
+			if scalar( @or_clause ) != 0;
+	}
+	
+	# Filter using events.
+	if ( defined( $events ) )
+	{
+		my @or_clause = ();
+		foreach my $data ( @$events )
+		{
+			my $event = $dbh->quote( $data->{'event'} );
+			my $operand = ( $data->{'include'} ? '=' : '!=' );
+			push( @or_clause, "( event $operand $event)" );
+		}
+		
+		push( @clause, '(' . join( ') OR (', @or_clause ) . ')' )
+			if scalar( @or_clause ) != 0;
+	}
+	
+	# Filter using account IDs.
+	if ( defined( $logged_in ) )
+	{
+		my @or_clause = ();
+		foreach my $data ( @$logged_in )
+		{
+			my $account_id = $dbh->quote( $data->{'account_id'} );
+			my $operand = ( $data->{'include'} ? '=' : '!=' );
+			push( @or_clause, "( logged_in_account_id $operand $account_id)" );
+		}
+		
+		push( @clause, '(' . join( ') OR (', @or_clause ) . ')' )
+			if scalar( @or_clause ) != 0;
+	}
+	if ( defined( $affected ) )
+	{
+		my @or_clause = ();
+		foreach my $data ( @$affected )
+		{
+			my $account_id = $dbh->quote( $data->{'account_id'} );
+			my $operand = ( $data->{'include'} ? '=' : '!=' );
+			push( @or_clause, "( affected_account_id $operand $account_id)" );
+		}
+		
+		push( @clause, '(' . join( ') OR (', @or_clause ) . ')' )
+			if scalar( @or_clause ) != 0;
+	}
+	
+	# Make sure we have at least one criteria, else something went wrong when we
+	# checked the parameters.
+	croak 'No filtering criteria was created, cannot search'
+		if scalar( @clause ) == 0;
+	
+	# Query the database.
+	my $joins = join( "\n", @join );
+	my $where = '(' . join( ') AND (', @clause ) . ')';
+	my $query = qq|
+		SELECT DISTINCT audit_events.*
+		FROM audit_events
+		$joins
+		WHERE $where
+		ORDER BY created ASC
+	|;
+	
+	my $events_handle = $dbh->prepare( $query );
+	$events_handle->execute();
+	
+	my $results = [];
+	while ( my $result = $events_handle->fetchrow_hashref() )
+	{
+		push(
+			@$results,
+			bless(
+				$result,
+				'Audit::DBI::Event',
+			)
+		);
+	}
+	
+	return $results;
+}
+
+
 =head1 ACCESSORS
 
 =head2 get_database_handle()
