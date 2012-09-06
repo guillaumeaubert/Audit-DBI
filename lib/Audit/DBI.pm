@@ -245,6 +245,67 @@ sub record ## no critic (NamingConventions::ProhibitAmbiguousNames)
 }
 
 
+=head1 INTERNAL METHODS
+
+=head2 _get_cache()
+
+Get a value from the cache.
+
+	my $value = $audit->get_cache( key => $key );
+
+=cut
+
+sub _get_cache
+{
+	my ( $self, %args ) = @_;
+	my $key = delete( $args{'key'} );
+	
+	# Check parameters.
+	croak 'The parameter "key" is mandatory'
+		if !defined( $key ) || $key !~ /\w/;
+	
+	my $memcache = $self->get_memcache();
+	return undef
+		if !defined( $memcache );
+	
+	return $memcache->get( $key );
+}
+
+
+=head2 _set_cache()
+
+Set a value into the cache.
+
+	$audit->_set_cache(
+		key         => $key,
+		value       => $value,
+		expire_time => $expire_time,
+	);
+
+=cut
+
+sub _set_cache
+{
+	my ( $self, %args ) = @_;
+	my $key = delete( $args{'key'} );
+	my $value = delete( $args{'value'} );
+	my $expire_time = delete( $args{'expire_time'} );
+	
+	# Check parameters.
+	croak 'The parameter "key" is mandatory'
+		if !defined( $key ) || $key !~ /\w/;
+	
+	my $memcache = $self->get_memcache();
+	return
+		if !defined( $memcache );
+	
+	$memcache->set( $key, $value, $expire_time )
+		|| carp 'Failed to set cache with key >' . $key . '<';
+	
+	return;
+}
+
+
 =head1 AUTHOR
 
 Guillaume Aubert, C<< <aubertg at cpan.org> >>.
