@@ -102,6 +102,38 @@ sub format_results
 }
 
 
+=head2 html_dumper()
+
+Format a data structure for display as HTML.
+
+	my $formatted_data = Audit::DBI::TT2::html_dumper( $data );
+
+=cut
+
+sub html_dumper
+{
+	my ( $data ) = @_;
+	return undef
+		if !defined( $data );
+	
+	my $string;
+	{
+		# Skip "$VAR1 = ".
+		local $Data::Dumper::Terse = 1;
+		# Don't quote hash keys.
+		local $Data::Dumper::Quotekeys = 0;
+		$string = Dumper( $data );
+	}
+	
+	$string =~ s/\$VAR1 = //;
+	$string = HTML::Entities::encode_entities( $string );
+	$string =~ s/ /&nbsp;/g;
+	$string =~ s/\n/<br\/>/g;
+	
+	return $string;
+}
+
+
 =head1 AUTHOR
 
 Guillaume Aubert, C<< <aubertg at cpan.org> >>.
