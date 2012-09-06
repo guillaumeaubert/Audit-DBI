@@ -340,6 +340,136 @@ sub _set_cache
 }
 
 
+=head2 _insert_event()
+
+Insert an audit event in the database.
+
+	my $audit_event = $audit->_insert_event( \%data );
+
+Important: note that this is an internal function that record() calls. You should
+be using record() instead. What you can do with this function is to subclass
+it if you need to extend/change how events are inserted, for example:
+
+=over 4
+
+=item
+
+if you want to stash it into a register_cleanup() when you're making the
+all in Apache context (so that audit calls don't slow down the main request);
+
+=item
+
+if you want to insert extra information.
+
+=back
+
+=cut
+
+sub _insert_event
+{
+	my ( $self, $data ) = @_;
+	my $dbh = $self->get_database_handle();
+	
+	return try
+	{
+		# Make a diff if applicable based on the content of 'diff'
+		if ( defined( $data->{'diff'} ) )
+		{
+			croak 'The "diff" argument must be an arrayref'
+				if !Data::Validate::Type::is_arrayref( $data->{'diff'} );
+			
+			croak 'The "diff" argument cannot have more than two elements'
+				if scalar( @{ $data->{'diff'} } ) > 2;
+			
+			$data->{'diff'} = MIME::Base64::encode_base64(
+				Storable::freeze(
+					Audit::DBI::Utils::diff_structures( @{ $data->{'diff'} } )
+				)
+			);
+		}
+		
+		# Clean input.
+		my $search_data = delete( $data->{'search_data'} );
+		
+		# Freeze the free-form data as soon as it is set on the object, in case it's
+		# a complex data structure with references that may be updated before the
+		# insert in the database.
+		$data->{'information'} = MIME::Base64::encode_base64( Storable::freeze( $data->{'information'} ) )
+			if defined( $data->{'information'} );
+		
+		# Set defaults.
+		$data->{'created'} = time();
+		$data->{'ipv4_address'} = Audit::DBI::Utils::ipv4_to_integer( $ENV{'REMOTE_ADDR'} );
+		$data->{'event_time'} = time()
+			if !defined( $data->{'event_time'} );
+		
+		# Insert.
+		my @fields = ();
+		my @values = ();
+		foreach my $field ( keys %$data )
+		{
+			push( @fields, $dbh->quote( $field) );
+			push( @values, $data->{ $field } );
+		}
+		my $insert = $dbh->do(
+			sprintf(
+				q|
+					INSERT INTO audit_events( %s )
+					VALUES ( %s )
+				|,
+				join( ', ', @fields ),
+				join( ', ', ( '?' ) x scalar( @fields ) ),
+			),
+			{},
+			@values,
+		) || croak 'Cannot execute SQL: ' . $dbh->errstr();
+		$data->{'audit_event_id'} = $dbh->last_insert_id(
+			undef,
+			undef,
+			'audit_events',
+			'audit_event_id',
+		);
+		
+		# Create an object to return.
+		my $audit_event = Audit::DBI::Event->new( data => $data );
+		
+		# Add the search data
+		if ( defined( $search_data ) )
+		{
+			my $sth = $dbh->prepare(
+				q|
+					INSERT INTO audit_search( audit_event_id, name, value )
+					VALUES( ?, ?, ? )
+				|
+			);
+			
+			foreach my $name ( keys %$search_data )
+			{
+				my $values = $search_data->{ $name };
+				$values = [ $values ] # Force array
+					if !Data::Validate::Type::is_arrayref( $values );
+				
+				foreach my $value ( @$values )
+				{
+					$sth->execute(
+						$data->{'audit_event_id'},
+						lc( $name ),
+						lc( $value || '' ),
+					) || carp 'Failed to insert search index key >' . $name . '< for audit event ID >' . $audit_event->id() . '<'; 
+				}
+			}
+		}
+		
+		return $audit_event;
+	}
+	catch
+	{
+		carp $_;
+		return undef;
+	};
+}
+
+
 =head1 AUTHOR
 
 Guillaume Aubert, C<< <aubertg at cpan.org> >>.
