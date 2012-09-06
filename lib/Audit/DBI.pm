@@ -245,6 +245,40 @@ sub record ## no critic (NamingConventions::ProhibitAmbiguousNames)
 }
 
 
+=head1 ACCESSORS
+
+=head2 get_database_handle()
+
+Return the database handle tied to the audit object.
+
+	my $database_handle = $audit->_get_database_handle();
+
+=cut
+
+sub get_database_handle
+{
+	my ( $self ) = @_;
+
+	return $self->{'database_handle'};
+}
+
+
+=head2 get_memcache()
+
+Return the database handle tied to the audit object.
+
+	my $memcache = $audit->get_memcache();
+
+=cut
+
+sub get_memcache
+{
+	my ( $self ) = @_;
+
+	return $self->{'memcache'};
+}
+
+
 =head1 INTERNAL METHODS
 
 =head2 _get_cache()
