@@ -1,3 +1,8 @@
+html {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 9pt;
+}
+
 #model_row
 {
 	display: none;
@@ -10,8 +15,6 @@
 {
 	width: 600px;
 	clear: both;
-	font-family: Lucida, Helvetica, Sans-Serif;
-	font-size: 8pt;
 }
 #headers h3
 {
