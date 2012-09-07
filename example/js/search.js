@@ -1,7 +1,7 @@
 var count = 0;
 
 /* Adds a new row in the list of criteria */
-function add_new_criteria(invert, criteria, values){
+function add_new_criteria(invert, criteria, values) {
 	// Copy the row and set a unique ID on it
 	$('#criteria').append(
 		$('#model_row').html()
@@ -132,27 +132,30 @@ function submit_search() {
 }
 
 /* After loading, populate criteria with input if available */
-window.onload = function() {
-	// Check for parameters and populate the criteria accordingly
-	var rows_added = false;
-	var params = window.location.search.substring(1).split('&');
-	jQuery.each(
-		params,
-		function() {
-			var temp = this.split('=');
-			if (temp[0] == '' || temp[0] == 'action') return;
-			
-			var invert = temp[0].substr(-1);
-			var criteria = temp[0].substr(0, temp[0].length-1);
-			
-			add_new_criteria(invert, criteria, unescape(temp[1]));
-			rows_added = true;
+$(document).ready(
+	function()
+	{
+		// Check for parameters and populate the criteria accordingly
+		var rows_added = false;
+		var params = window.location.search.substring(1).split('&');
+		jQuery.each(
+			params,
+			function() {
+				var temp = this.split('=');
+				if (temp[0] == '' || temp[0] == 'action') return;
+				
+				var invert = temp[0].substr(-1);
+				var criteria = temp[0].substr(0, temp[0].length-1);
+				
+				add_new_criteria(invert, criteria, unescape(temp[1]));
+				rows_added = true;
+			}
+		);
+		
+		// If no row was created, create an empty row
+		if (!rows_added) {
+			add_new_criteria();
 		}
-	);
-	
-	// If no row was created, create an empty row
-	if (!rows_added) {
-		add_new_criteria();
 	}
-}
+);
 
