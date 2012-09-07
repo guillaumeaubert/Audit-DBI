@@ -182,7 +182,7 @@ immediate caller of Audit::DBI->record().
 =back
 
 Note: if you want to delay the insertion of audit events (to group them, for
-performance), subclass C<Audit::DBI> and add a custom C<_insert_event method()>.
+performance), subclass C<Audit::DBI> and add a custom C<_insert_event()> method.
 
 =cut
 
