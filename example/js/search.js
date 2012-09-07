@@ -1,7 +1,8 @@
 var count = 0;
 
 /* Adds a new row in the list of criteria */
-function add_new_criteria(invert, criteria, values) {
+function add_new_criteria(invert, criteria, values)
+{
 	// Copy the row and set a unique ID on it
 	$('#criteria').append(
 		$('#model_row').html()
@@ -41,7 +42,8 @@ function add_new_criteria(invert, criteria, values) {
 }
 
 /* Show the UI to select the values for a given criteria */
-function show_values_div(container, criteria, values) {
+function show_values_div(container, criteria, values)
+{
 	var value;
 	if (values != null) {
 		value = values.split('::');
@@ -88,7 +90,8 @@ function show_values_div(container, criteria, values) {
 }
 
 /* Makes a URL representing the parameters chosen in the UI */
-function submit_search() {
+function submit_search()
+{
 	var url = '?action=results';
 	jQuery.each(
 		$('#criteria .row'),
@@ -140,7 +143,8 @@ $(document).ready(
 		var params = window.location.search.substring(1).split('&');
 		jQuery.each(
 			params,
-			function() {
+			function()
+			{
 				var temp = this.split('=');
 				if (temp[0] == '' || temp[0] == 'action') return;
 				

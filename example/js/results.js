@@ -2,12 +2,13 @@ $(document).ready(
 	function()
 	{
 		// Search all the links in code columns
-		jQuery.each(
-			$('#results .code a'),
-			function() {
+		$('#results .code a').each(
+			function()
+			{
 				// Activate toggling
 				$(this).click(
-					function() {
+					function()
+					{
 						$(this).parent().find('div').toggle();
 						return false;
 					}
@@ -17,10 +18,11 @@ $(document).ready(
 		
 		// Activate toggling all
 		$('#toggle_all').click(
-			function() {
-				jQuery.each(
-					$('#results .code div'),
-					function() {
+			function()
+			{
+				$('#results .code div').each(
+					function()
+					{
 						$(this).toggle();
 					}
 				);
