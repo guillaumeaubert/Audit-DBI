@@ -38,6 +38,7 @@ our $VERSION = '1.4.0';
 	# Create the necessary tables.
 	$audit->create_tables();
 	
+	# Record an audit event.
 	$audit->record(
 		event               => $event,
 		subject_type        => $subject_type,
@@ -51,7 +52,8 @@ our $VERSION = '1.4.0';
 		line                => $line,
 	);
 	
-	$audit->review(
+	# Search audit events.
+	my $audit_events = $audit->review(
 		[ search criteria ]
 	);
 
