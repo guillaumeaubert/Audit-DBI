@@ -11,27 +11,8 @@
 			Please select at least one criteria to search on.
 		</p>
 	[% ELSE %]
-		<style>
-			.code {
-				min-width: 400px;
-			}
-			.code div {
-				font-family: monospace;
-				border: 1px solid #257025;
-				margin-top: 3px;
-				display: none;
-			}
-			#results {
-				font-family: Lucida, Helvetica, Sans-Serif;
-				font-size: 8pt;
-			}
-			#results td {
-				border-right: 1px solid lightgrey;
-				vertical-align: top;
-			}
-			#results th {
-				border-bottom: 1px solid black;
-			}
+		<style type="text/css">
+			@import "css/results.css";
 		</style>
 		<script>
 			window.onload = function() {
