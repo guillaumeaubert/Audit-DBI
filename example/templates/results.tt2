@@ -14,37 +14,9 @@
 		<style type="text/css">
 			@import "css/results.css";
 		</style>
-		<script>
-			window.onload = function() {
-				// Search all the links in code columns
-				jQuery.each(
-					$('#results .code a'),
-					function() {
-						// Activate toggling
-						$(this).click(
-							function() {
-								$(this).parent().find('div').toggle();
-								return false;
-							}
-						);
-					}
-				);
-				
-				// Activate toggling all
-				$('#toggle_all').click(
-					function() {
-						jQuery.each(
-							$('#results .code div'),
-							function() {
-								$(this).toggle();
-							}
-						);
-						return false;
-					}
-				);
-			}
-		</script>
-	
+		
+		<script type="text/javascript" src="js/results.js"></script>
+		
 		<p>
 			Found: [% found %] results.
 			<a href="[% refine_url %]">Refine search results</a>
