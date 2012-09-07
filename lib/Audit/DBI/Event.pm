@@ -57,15 +57,15 @@ sub new
 }
 
 
-=head2 id()
+=head2 get_id()
 
 Return the audit event ID.
 
-	my $audit_event_id = $self->id()
+	my $audit_event_id = $self->get_id()
 
 =cut
 
-sub id
+sub get_id
 {
 	my ( $self ) = @_;
 	

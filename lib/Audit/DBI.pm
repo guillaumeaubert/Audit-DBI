@@ -960,7 +960,7 @@ sub insert_event
 						$data->{'audit_event_id'},
 						lc( $name ),
 						lc( $value || '' ),
-					) || carp 'Failed to insert search index key >' . $name . '< for audit event ID >' . $audit_event->id() . '<';
+					) || carp 'Failed to insert search index key >' . $name . '< for audit event ID >' . $audit_event->get_id() . '<';
 				}
 			}
 		}
