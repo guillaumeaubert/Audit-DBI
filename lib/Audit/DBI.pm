@@ -182,7 +182,7 @@ immediate caller of Audit::DBI->record().
 =back
 
 Note: if you want to delay the insertion of audit events (to group them, for
-performance), subclass C<Audit::DBI> and add a custom C<_insert_event()> method.
+performance), subclass C<Audit::DBI> and add a custom C<insert_event()> method.
 
 =cut
 
@@ -209,10 +209,10 @@ sub record ## no critic (NamingConventions::ProhibitAmbiguousNames)
 	# Rate limiting.
 	if ( defined( $limit_rate_timespan ) )
 	{
-		if ( !defined( $self->_get_cache( key => $limit_rate_unique_key ) ) )
+		if ( !defined( $self->get_cache( key => $limit_rate_unique_key ) ) )
 		{
 			# Cache event.
-			$self->_set_cache(
+			$self->set_cache(
 				key         => $limit_rate_unique_key,
 				value       => 1,
 				expire_time => time() + $limit_rate_timespan,
@@ -239,7 +239,7 @@ sub record ## no critic (NamingConventions::ProhibitAmbiguousNames)
 			if !defined( $args{'line'} );
 	}
 	
-	my $audit_event = $self->_insert_event( \%args );
+	my $audit_event = $self->insert_event( \%args );
 	
 	return defined( $audit_event )
 		? 1
@@ -786,7 +786,7 @@ sub get_memcache
 
 =head1 INTERNAL METHODS
 
-=head2 _get_cache()
+=head2 get_cache()
 
 Get a value from the cache.
 
@@ -794,7 +794,7 @@ Get a value from the cache.
 
 =cut
 
-sub _get_cache
+sub get_cache
 {
 	my ( $self, %args ) = @_;
 	my $key = delete( $args{'key'} );
@@ -811,11 +811,11 @@ sub _get_cache
 }
 
 
-=head2 _set_cache()
+=head2 set_cache()
 
 Set a value into the cache.
 
-	$audit->_set_cache(
+	$audit->set_cache(
 		key         => $key,
 		value       => $value,
 		expire_time => $expire_time,
@@ -823,7 +823,7 @@ Set a value into the cache.
 
 =cut
 
-sub _set_cache
+sub set_cache
 {
 	my ( $self, %args ) = @_;
 	my $key = delete( $args{'key'} );
@@ -845,11 +845,11 @@ sub _set_cache
 }
 
 
-=head2 _insert_event()
+=head2 insert_event()
 
 Insert an audit event in the database.
 
-	my $audit_event = $audit->_insert_event( \%data );
+	my $audit_event = $audit->insert_event( \%data );
 
 Important: note that this is an internal function that record() calls. You should
 be using record() instead. What you can do with this function is to subclass
@@ -870,7 +870,7 @@ if you want to insert extra information.
 
 =cut
 
-sub _insert_event
+sub insert_event
 {
 	my ( $self, $data ) = @_;
 	my $dbh = $self->get_database_handle();
