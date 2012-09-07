@@ -632,10 +632,7 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 	{
 		push(
 			@$results,
-			bless(
-				$result,
-				'Audit::DBI::Event',
-			)
+			Audit::DBI::Event->new( data => $result ),
 		);
 	}
 	
