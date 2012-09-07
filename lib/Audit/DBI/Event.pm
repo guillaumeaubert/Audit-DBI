@@ -57,6 +57,8 @@ sub new
 }
 
 
+=head1 ACCESSORS
+
 =head2 get_id()
 
 Return the audit event ID.
