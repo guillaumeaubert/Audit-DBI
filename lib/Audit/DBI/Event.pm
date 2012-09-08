@@ -26,8 +26,17 @@ our $VERSION = '1.4.0';
 =head1 SYNOPSIS
 
 	use Audit::DBI::Event;
+	
+	my $audit_event = Audit::DBI::Event->new(
+		data => $data, #mandatory
+	);
+	
+	my $audit_event_id = $audit_event->get_id();
+	my $information = $audit_event->get_information();
+	my $diff = $audit_event->get_diff();
+	my $ipv4_address = $audit_event->get_ipv4_address();
 
-
+	
 =head1 METHODS
 
 =head2 new()
@@ -63,7 +72,7 @@ sub new
 
 Return the audit event ID.
 
-	my $audit_event_id = $self->get_id()
+	my $audit_event_id = $audit_event->get_id();
 
 =cut
 
@@ -79,7 +88,7 @@ sub get_id
 
 Retrieve the extra information stored, if any.
 
-	my $information = $self->get_information();
+	my $information = $audit_event->get_information();
 
 =cut
 
@@ -97,7 +106,7 @@ sub get_information
 
 Retrieve the diff information stored, if any.
 
-	my $diff = $self->get_diff();
+	my $diff = $audit_event->get_diff();
 
 =cut
 
