@@ -22,4 +22,6 @@ html {
 #results th {
 	border-bottom: 1px solid black;
 }
-
+#results tr.even {
+	background-color: #F0F0F0;
+}
