@@ -25,35 +25,35 @@
 		</p>
 		<p>&nbsp;</p>
 		
-		<table cellspacing="0" cellpadding="4" align="center" class="block" id="results">
+		<table cellspacing="0" cellpadding="4" align="center" id="results">
 			<thead>
 				<tr bgcolor="lightgrey">
 					<th width="50">
-						<p class="smallhdr">ID</p>
+						ID
 					</th>
 					<th width="75">
-						<p class="smallhdr">Date</p>
+						Date
 					</th>
 					<th width="120">
-						<p class="smallhdr">Event</p>
+						Event
 					</th>
 					<th width="120">
-						<p class="smallhdr">Subject Type</p>
+						Subject Type
 					</th>
 					<th width="75">
-						<p class="smallhdr">Subject ID</p>
+						Subject ID
 					</th>
 					<th>
-						<p class="smallhdr">Diff</p>
+						Diff
 					</th>
 					<th>
-						<p class="smallhdr">Context</p>
+						Context
 					</th>
 					<th width="100">
-						<p class="smallhdr">Account<br/>Logged In</p>
+						Account<br/>Logged In
 					</th>
 					<th width="100">
-						<p class="smallhdr">Account<br/>Affected</p>
+						Account<br/>Affected
 					</th>
 				</tr>
 			</thead>
