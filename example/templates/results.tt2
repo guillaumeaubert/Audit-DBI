@@ -21,7 +21,7 @@
 			Found: [% found %] results.
 			<a href="[% refine_url %]">Refine search results</a>
 			-
-			<a href="Javascript:return;" id="toggle_all">Toggle all</a>
+			<a id="toggle_all">Toggle all</a>
 		</p>
 		<p>&nbsp;</p>
 		
