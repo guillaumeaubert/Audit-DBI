@@ -27,6 +27,7 @@ $audit->create_tables(
 );
 
 $ENV{'REMOTE_ADDR'} = '127.0.0.1';
+
 $audit->record(
 	event        => 'Test',
 	subject_type => 'test',
@@ -42,3 +43,20 @@ $audit->record(
 		random_string => 'ABC123',
 	},
 );
+
+$audit->record(
+	event        => 'Test',
+	subject_type => 'test',
+	subject_id   => '2',
+	information  =>
+	{
+		test_event_id => 2,
+		random_string => 'ABC1234',
+	},
+	search_data  =>
+	{
+		test_event_id => 2,
+		random_string => 'ABC1234',
+	},
+);
+
