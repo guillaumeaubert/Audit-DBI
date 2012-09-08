@@ -1,5 +1,11 @@
 Revision history for Audit-DBI
 
+v1.4.0  09/07/2012
+        * Repackaged and generalized code.
+        * Added fully working example.
+        * Added standalone tests.
+        * Public release.
+
 v1.3.0  02/13/2012
         * Nathan Gray (KOLIBRIE) implemented rate-limiting in Audit::DBI->record().
 
