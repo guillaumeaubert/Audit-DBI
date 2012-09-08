@@ -9,10 +9,14 @@ Makefile.PL
 README
 example/css/date-picker-prod.css
 example/css/jquery.datepick.css
+example/css/results.css
+example/css/search.css
 example/index.cgi
 example/js/jquery-1.5.2.min.js
 example/js/jquery.datepick.js
 example/js/jquery.datepick.min.js
+example/js/results.js
+example/js/search.js
 example/setup_test_database.pl
 example/templates/results.tt2
 example/templates/search.tt2
