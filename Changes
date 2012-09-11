@@ -1,5 +1,9 @@
 Revision history for Audit-DBI
 
+v1.4.3  09/11/2012
+        * Fixed warning.
+        * Fixed call to Storable::freeze() when there is no diff structure.
+
 v1.4.2  09/11/2012
         * Fixed how field names are quoted when inserting events.
 
