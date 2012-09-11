@@ -135,7 +135,7 @@ sub _diff_structures
 	# make sure the provided equality function is really a coderef
 	if ( !Data::Validate::Type::is_coderef( $comparison_function ) )
 	{
-		if ( $comparison_function eq 'alsonumeric' )
+		if ( defined( $comparison_function ) && ( $comparison_function eq 'alsonumeric' ) )
 		{
 			$comparison_function = \&_diff_structures_equality_test_alsonumeric;
 		}
