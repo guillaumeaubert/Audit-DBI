@@ -1,5 +1,9 @@
 Revision history for Audit-DBI
 
+v1.4.1  09/10/2012
+        * Added optional database_handle argument to Audit::DBI->review().
+        * Tightened up checking for invalid parameters.
+
 v1.4.0  09/07/2012
         * Repackaged and generalized code.
         * Added fully working example.
