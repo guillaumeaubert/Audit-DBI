@@ -90,7 +90,9 @@ sub new
 	my ( $class, %args ) = @_;
 	my $dbh = delete( $args{'database_handle'} );
 	my $memcache = delete( $args{'memcache'} );
-
+	croak 'The following arguments are not valid: ' . join( ', ', keys %args )
+		if scalar( keys %args ) != 0;
+	
 	# Check parameters.
 	croak "Argument 'database_handle' is mandatory and must be a DBI object"
 		if !Data::Validate::Type::is_instance( $dbh, class => 'DBI::db' );
@@ -396,6 +398,8 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 	my $events = delete( $args{'events'} );
 	my $logged_in = delete( $args{'logged_in'} );
 	my $affected = delete( $args{'affected'} );
+	croak 'Invalid argument(s): ' . join( ', ', keys %args )
+		if scalar( keys %args ) != 0;
 	
 	### CLEAN PARAMETERS
 	
@@ -656,7 +660,7 @@ sub create_tables
 	my ( $self, %args ) = @_;
 	my $drop_if_exist = delete( $args{'drop_if_exist'} );
 	croak 'Invalid argument(s): ' . join( ', ', keys %args )
-		if scalar( keys %args );
+		if scalar( keys %args ) != 0;
 	
 	# Defaults.
 	$drop_if_exist = 0
@@ -798,6 +802,8 @@ sub get_cache
 {
 	my ( $self, %args ) = @_;
 	my $key = delete( $args{'key'} );
+	croak 'Invalid argument(s): ' . join( ', ', keys %args )
+		if scalar( keys %args ) != 0;
 	
 	# Check parameters.
 	croak 'The parameter "key" is mandatory'
@@ -829,6 +835,8 @@ sub set_cache
 	my $key = delete( $args{'key'} );
 	my $value = delete( $args{'value'} );
 	my $expire_time = delete( $args{'expire_time'} );
+	croak 'Invalid argument(s): ' . join( ', ', keys %args )
+		if scalar( keys %args ) != 0;
 	
 	# Check parameters.
 	croak 'The parameter "key" is mandatory'
