@@ -11,11 +11,11 @@ Audit::DBI::Utils - Utilities for the Audit::DBI distribution.
 
 =head1 VERSION
 
-Version 1.4.1
+Version 1.4.2
 
 =cut
 
-our $VERSION = '1.4.1';
+our $VERSION = '1.4.2';
 
 
 =head1 SYNOPSIS
