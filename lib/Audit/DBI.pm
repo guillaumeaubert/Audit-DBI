@@ -942,7 +942,7 @@ sub insert_event
 		my @values = ();
 		foreach my $field ( keys %$data )
 		{
-			push( @fields, $dbh->quote( $field) );
+			push( @fields, $dbh->quote_identifier( $field) );
 			push( @values, $data->{ $field } );
 		}
 		my $insert = $dbh->do(
