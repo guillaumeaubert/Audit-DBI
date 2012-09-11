@@ -72,11 +72,11 @@ Parameters:
 
 =over 4
 
-=item * 'database handle'
+=item * database handle
 
 Mandatory, a DBI object.
 
-=item * 'memcache'
+=item * memcache
 
 Optional, a Cache::Memcached or Cache::Memcached::Fast object to use for
 rate limiting. If not specified, rate-limiting functions will not be available.
