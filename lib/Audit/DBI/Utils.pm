@@ -3,6 +3,9 @@ package Audit::DBI::Utils;
 use strict;
 use warnings;
 
+use Carp;
+use Data::Validate::Type;
+
 
 =head1 NAME
 
@@ -34,6 +37,68 @@ our $VERSION = '1.4.3';
 
 
 =head1 FUNCTIONS
+
+=head2 stringify_data_structure()
+
+	my $string = Audit::DBI::Utils::stringify_data_structure(
+		data_structure             => $data_structure,
+		object_stringification_map =>
+		{
+			'Math::Currency' => 'as_float',
+		},
+	);
+
+=cut
+
+sub stringify_data_structure
+{
+	my ( %args ) = @_;
+	my $data_structure = delete( $args{'data_structure'} );
+	my $object_stringification_map = delete( $args{'object_stringification_map'} );
+	croak 'The following arguments are not valid: ' . join( ', ', keys %args )
+		if scalar( keys %args ) != 0;
+	
+	return _stringify_data_structure( $data_structure, $object_stringification_map );
+}
+
+sub _stringify_data_structure
+{
+	my ( $data_structure, $object_stringification_map ) = @_;
+	
+	if ( Data::Validate::Type::is_arrayref( $data_structure ) )
+	{
+		# If we have an array, try to stringify each of the elements.
+		return
+		[
+			map { _stringify_data_structure( $_, $object_stringification_map ) } @$data_structure
+		];
+	}
+	elsif ( Data::Validate::Type::is_hashref( $data_structure ) )
+	{
+		# First, we try to stringify this object.
+		foreach my $class ( keys %$object_stringification_map )
+		{
+			next if !Data::Validate::Type::is_instance( $data_structure, class => $class );
+			my $stringification_method = $object_stringification_map->{ $class };
+			next if !$data_structure->can( $stringification_method );
+			return $data_structure->$stringification_method();
+		}
+		
+		# If we haven't found it in our list of stringifiable objects,
+		# then we need to investigate the individual keys.
+		return
+		{
+			map
+				{ $_ => _stringify_data_structure( $data_structure->{ $_ }, $object_stringification_map ) }
+				keys %$data_structure
+		};
+	}
+	else
+	{
+		return $data_structure;
+	}
+}
+
 
 =head2 integer_to_ipv4()
 
