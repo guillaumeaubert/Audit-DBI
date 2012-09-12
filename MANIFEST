@@ -37,6 +37,7 @@ t/99-cleanup.t
 t/Event/00-load.t
 t/TT2/00-load.t
 t/Utils/00-load.t
+t/Utils/10-stringify_data_structure.t
 t/manifest.t
 t/module_versions.t
 t/perlcritic.t
