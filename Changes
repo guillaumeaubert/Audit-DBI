@@ -1,5 +1,10 @@
 Revision history for Audit-DBI
 
+v1.5.0  09/12/2012
+        * Implemented option to convert objects into strings when calling,
+          record(), to improve the readability of the diff and information
+          when calling review().
+
 v1.4.3  09/11/2012
         * Fixed warning.
         * Fixed call to Storable::freeze() when there is no diff structure.
