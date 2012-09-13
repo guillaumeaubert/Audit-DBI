@@ -1110,7 +1110,7 @@ Thanks to Nathan Gray (KOLIBRIE) for implementing rate limiting in record()
 calls in v1.3.0.
 
 Thanks to Kate Kirby (KATE) for pair-programming on the implementation of
-stringification feature in v1.5.0.
+the stringification feature in v1.5.0.
 
 
 =head1 COPYRIGHT & LICENSE
