@@ -80,7 +80,7 @@ internal variables.
 A good example of this is C<Math::Currency>. To convert those objects to
 strings, you can use the following:
 
-	local $Audit::DBI::Utils::FORCE_OBJECT_STRINGIFICATION =
+	local $Audit::DBI::FORCE_OBJECT_STRINGIFICATION =
 	{
 		'Math::Currency' => 'bstr',
 	};
