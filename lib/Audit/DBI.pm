@@ -222,7 +222,7 @@ performance), subclass C<Audit::DBI> and add a custom C<insert_event()> method.
 
 sub record ## no critic (NamingConventions::ProhibitAmbiguousNames)
 {
-	my( $self, %args ) = @_;
+	my ( $self, %args ) = @_;
 	my $limit_rate_timespan = delete( $args{'limit_rate_timespan'} );
 	my $limit_rate_unique_key = delete( $args{'limit_rate_unique_key'} );
 	my $dbh = $self->get_database_handle();
