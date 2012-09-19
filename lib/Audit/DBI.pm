@@ -723,7 +723,7 @@ sub create_tables
 	my $database_handle = $self->get_database_handle();
 	my $database_type = $database_handle->{'Driver'}->{'Name'};
 	croak 'This database type is not supported yet. Please email the maintainer of the module for help.'
-		if $database_type !~ m/^(?:SQLite|MySQL)$/;
+		if $database_type !~ m/^(?:SQLite|MySQL)$/i;
 	
 	# Create the table that will hold the audit records.
 	$database_handle->do( q|DROP TABLE IF EXISTS audit_events| )
