@@ -73,7 +73,7 @@
          "http://www.perlfoundation.org/artistic_license_1_0"
       ],
       "repository" : {
-         "url" : "https://sourceforge.net/p/perl-audit-dbi/code"
+         "url" : "https://github.com/guillaumeaubert/Audit-DBI"
       }
    },
    "version" : "v1.5.0"

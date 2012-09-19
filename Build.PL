@@ -44,7 +44,7 @@ my $builder = Module::Build->new(
 	{
 		resources              =>
 		{
-			repository  => 'https://sourceforge.net/p/perl-audit-dbi/code',
+			repository  => 'https://github.com/guillaumeaubert/Audit-DBI',
 			homepage    => 'https://metacpan.org/release/Audit-DBI',
 			bugtracker  => 'http://rt.cpan.org/NoAuth/ReportBug.html?Queue=audit-dbi',
 		},
