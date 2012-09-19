@@ -765,7 +765,7 @@ sub create_tables
 					PRIMARY KEY  (audit_event_id),
 					KEY idx_event (event),
 					KEY idx_event_time (event_time),
-					KEY idx_ip_address (ip_address),
+					KEY idx_ipv4_address (ipv4_address),
 					KEY idx_file_line (file,line),
 					KEY idx_logged_in_account_id (logged_in_account_id(8)),
 					KEY idx_affected_account_id (affected_account_id(8)),
