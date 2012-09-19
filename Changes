@@ -1,5 +1,10 @@
 Revision history for Audit-DBI
 
+v1.5.1  09/19/2012
+        * POD corrections.
+        * (RT #79749) Fixed index name. Thanks Jamie!
+        * Moved repository to GitHub.
+
 v1.5.0  09/12/2012
         * Implemented option to convert objects into strings when calling,
           record(), to improve the readability of the diff and information
