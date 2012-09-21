@@ -105,3 +105,13 @@ is(
 
 #TODO - test event information / diff.
 
+my $information = $audit_event->get_information();
+is_deeply(
+	$information,
+	{
+		test_id       => $test_subject_id,
+		random_string => $random_string,
+	},
+	'The stored information is correct.',
+);
+
