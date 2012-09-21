@@ -150,7 +150,11 @@ Record an audit event along with information on the context and data changed.
 		subject_type        => $subject_type,
 		subject_id          => $subject_id,
 		event_time          => $event_time,
-		diff                => [ $old_structure, $new_structure ],
+		diff                =>
+		[
+			$old_structure,
+			$new_structure,
+		],
 		search_data         => \%search_data,
 		information         => \%information,
 		affected_account_id => $account_id,
@@ -215,8 +219,31 @@ immediate caller of Audit::DBI->record().
 
 =back
 
-Note: if you want to delay the insertion of audit events (to group them, for
+Notes:
+
+=over 4
+
+=item *
+
+If you want to delay the insertion of audit events (to group them, for
 performance), subclass C<Audit::DBI> and add a custom C<insert_event()> method.
+
+=item *
+
+You can specify a custom comparison function to use for comparing leaf nodes in
+the data structures passed to diff, with the following syntax.
+
+	diff =>
+	[
+			$old_structure,
+			$new_structure,
+			comparison_function => sub { ... },
+	]
+
+See C<Audit::DBI::Utils::diff_structures()> for more information on how to
+write custom comparison functions.
+
+=back
 
 =cut
 
@@ -944,19 +971,29 @@ sub insert_event
 			croak 'The "diff" argument must be an arrayref'
 				if !Data::Validate::Type::is_arrayref( $data->{'diff'} );
 			
-			croak 'The "diff" argument cannot have more than two elements'
-				if scalar( @{ $data->{'diff'} } ) > 2;
+			# Preserve the diff arguments.
+			my ( $old_data, $new_data, @diff_args ) = @{ $data->{'diff'} };
 			
-			my $diff = Audit::DBI::Utils::diff_structures(
-				map
-				{
-					Audit::DBI::Utils::stringify_data_structure(
-						data_structure             => $_,
-						object_stringification_map => $FORCE_OBJECT_STRINGIFICATION,
-					);
-				} @{ $data->{'diff'} }
+			# Force-stringify objects in the data structures, for
+			# the objects listed in $FORCE_OBJECT_STRINGIFICATION.
+			$old_data = Audit::DBI::Utils::stringify_data_structure(
+				data_structure             => $old_data,
+				object_stringification_map => $FORCE_OBJECT_STRINGIFICATION,
+			);
+			$new_data = Audit::DBI::Utils::stringify_data_structure(
+				data_structure             => $new_data,
+				object_stringification_map => $FORCE_OBJECT_STRINGIFICATION,
 			);
 			
+			# Determine the differences between the two structures.
+			my $diff = Audit::DBI::Utils::diff_structures(
+				$old_data,
+				$new_data,
+				@diff_args,
+			);
+			
+			# If there's a diff, freeze and encode it for storage
+			# in the database.
 			$data->{'diff'} = defined( $diff )
 				? MIME::Base64::encode_base64(
 					Storable::freeze(
