@@ -173,13 +173,14 @@ sub diff_structures
 	);
 }
 
-sub _diff_structures_equality_test_default
+sub _diff_structures_comparison_eq
 {
 	my ( $variable_1, $variable_2 ) = @_;
+	
 	return $variable_1 eq $variable_2;
 }
 
-sub _diff_structures_equality_test_alsonumeric
+sub _diff_structures_comparison_default
 {
 	my ( $variable_1, $variable_2 ) = @_;
 	
@@ -199,13 +200,13 @@ sub _diff_structures
 	# make sure the provided equality function is really a coderef
 	if ( !Data::Validate::Type::is_coderef( $comparison_function ) )
 	{
-		if ( defined( $comparison_function ) && ( $comparison_function eq 'alsonumeric' ) )
+		if ( defined( $comparison_function ) && ( $comparison_function eq 'eq' ) )
 		{
-			$comparison_function = \&_diff_structures_equality_test_alsonumeric;
+			$comparison_function = \&_diff_structures_comparison_eq;
 		}
 		else
 		{
-			$comparison_function = \&_diff_structures_equality_test_default;
+			$comparison_function = \&_diff_structures_comparison_default;
 		}
 	}
 	
