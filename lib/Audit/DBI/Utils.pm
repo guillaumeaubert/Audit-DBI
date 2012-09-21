@@ -151,15 +151,35 @@ sub ipv4_to_integer
 
 Return the differences between the two data structures passed as parameter.
 
-If provided, the "equality_function" parameter provides a coderef to an
-alternative equality function for comparison of the scalars in the leaf nodes
-of the data structures. By default, 'eq' is used, but by providing a function
-that takes two parameters, diff_structures will perform any equality test.
+By default, if leaf nodes are compared with '==' if they are both numeric, and
+with 'eq' otherwise.
+
+An optional I<comparison_function> parameter can be used to specify a different
+comparison function.
 
 	my $differences = Audit::DBI::Utils::diff_structures(
 		$data_structure_1,
 		$data_structure_2,
-		comparison_function => sub { my ( $a, $b ) = @_; $a eq $b; }, #optional
+	);
+	
+	# Alternative built-in comparison function.
+	# Leaf nodes are compared using 'eq'.
+	my $diff = Audit::DBI::Utils::diff_structures(
+		$data_structure_1,
+		$data_structure_2,
+		comparison_function => 'eq',
+	);
+	
+	# Alternative custom comparison function.
+	my $diff = Audit::DBI::Utils::diff_structures(
+		$data_structure_1,
+		$data_structure_2,
+		comparison_function => sub
+		{
+			my ( $variable_1, $variable2 ) = @_;
+			# [...]
+			return $is_equal;
+		}
 	);
 
 =cut
