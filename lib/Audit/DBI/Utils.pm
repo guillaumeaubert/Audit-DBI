@@ -181,15 +181,14 @@ sub _diff_structures_equality_test_default
 
 sub _diff_structures_equality_test_alsonumeric
 {
-	my ( $a, $b ) = @_;
-	if ( Scalar::Util::looks_like_number( $a )
-		&& Scalar::Util::looks_like_number( $b ) )
-	{
-		# for numbers, return numerical comparison
-		return $a == $b;
-	}
-	# otherwise, use exact string match
-	return $a eq $b;
+	my ( $variable_1, $variable_2 ) = @_;
+	
+	# For numbers, return numerical comparison.
+	return $variable_1 == $variable_2
+		if Scalar::Util::looks_like_number( $variable_1 ) && Scalar::Util::looks_like_number( $variable_2 );
+	
+	# Otherwise, use exact string match.
+	return $variable_1 eq $variable_2;
 }
 
 sub _diff_structures
