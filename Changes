@@ -1,5 +1,12 @@
 Revision history for Audit-DBI
 
+v1.5.2  09/21/2012
+        * (RT #79696) Updated default comparison function when determining the
+          difference between two data structures to handle equal numbers with
+          a different formatting.
+        * (RT #79695) Added support in Audit::DBI->record() for specifying a
+          custom comparison function for the diff.
+
 v1.5.1  09/19/2012
         * POD corrections.
         * (RT #79749) Fixed index name. Thanks Jamie!
