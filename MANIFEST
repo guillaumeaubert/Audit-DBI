@@ -39,6 +39,7 @@ t/Event/00-load.t
 t/TT2/00-load.t
 t/Utils/00-load.t
 t/Utils/10-stringify_data_structure.t
+t/Utils/20-diff_structures.t
 t/manifest.t
 t/module_versions.t
 t/perlcritic.t
