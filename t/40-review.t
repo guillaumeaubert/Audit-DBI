@@ -6,7 +6,7 @@ use warnings;
 use Audit::DBI;
 use Config::Tiny;
 use DBI;
-use Test::More tests => 10;
+use Test::More tests => 12;
 use Test::Exception;
 
 
@@ -103,7 +103,18 @@ is(
 	'The IP address matches what was sent to audit().',
 );
 
-#TODO - test event information / diff.
+my $diff = $audit_event->get_diff();
+is_deeply(
+	$diff,
+	[
+		{
+			'index' => 1,
+			'new'   => 'C',
+			'old'   => 'B',
+		}
+	],
+	'The stored diff is correct.',
+) || diag( explain( $diff ) );
 
 my $information = $audit_event->get_information();
 is_deeply(

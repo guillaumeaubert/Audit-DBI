@@ -91,6 +91,16 @@ lives_ok(
 			event        => $test_event,
 			subject_type => $test_subject_type,
 			subject_id   => $test_subject_id,
+			diff         =>
+			[
+				[ 'A', 'B' ],
+				[ 'a', 'C' ],
+				comparison_function => sub
+				{
+					my ( $variable_1, $variable_2 ) = @_;
+					return lc( $variable_1 ) eq lc( $variable_2 );
+				},
+			],
 			information  =>
 			{
 				test_id       => $test_subject_id,
