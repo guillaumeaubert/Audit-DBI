@@ -77,7 +77,7 @@ internal variables.
 
 =back
 
-A good example of this is C<Math::Currency>. To convert those objects to
+A good example of this is L<Math::Currency>. To convert those objects to
 strings, you can use the following:
 
 	local $Audit::DBI::FORCE_OBJECT_STRINGIFICATION =
@@ -226,7 +226,7 @@ Notes:
 =item *
 
 If you want to delay the insertion of audit events (to group them, for
-performance), subclass C<Audit::DBI> and add a custom C<insert_event()> method.
+performance), subclass L<Audit::DBI> and add a custom C<insert_event()> method.
 
 =item *
 
@@ -240,7 +240,7 @@ the data structures passed to diff, with the following syntax.
 			comparison_function => sub { ... },
 	]
 
-See C<Audit::DBI::Utils::diff_structures()> for more information on how to
+See C<diff_structures()> in L<Audit::DBI::Utils> for more information on how to
 write custom comparison functions.
 
 =back
