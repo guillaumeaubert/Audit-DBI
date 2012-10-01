@@ -43,6 +43,7 @@ t/Utils/10-stringify_data_structure.t
 t/Utils/20-diff_structures.t
 t/Utils/21-diff_structures-eq.t
 t/Utils/22-diff_structures-custom.t
+t/Utils/30-integer_to_ipv4.t
 t/manifest.t
 t/module_versions.t
 t/perlcritic.t
