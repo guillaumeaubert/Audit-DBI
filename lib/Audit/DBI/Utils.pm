@@ -139,7 +139,13 @@ sub ipv4_to_integer
 	{
 		if ( ! grep { $_ > 255 } @bytes )
 		{
-			return unpack( "L", reverse Socket::inet_aton( $ip_address ) );
+			@bytes = reverse( @bytes );
+			my $integer = 0;
+			foreach my $exponent ( 0..3 )
+			{
+				$integer += $bytes[ $exponent ] * 256**$exponent;
+			}
+			return $integer;
 		}
 	}
 	
