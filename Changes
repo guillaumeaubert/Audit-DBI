@@ -1,5 +1,13 @@
 Revision history for Audit-DBI
 
+v1.5.3  10/01/2012
+        * Added tests for Audit::DBI::Utils::ipv4_to_integer() and
+          Audit::DBI::Utils::integer_to_ipv4().
+        * Simplified Audit::DBI::Utils::ipv4_to_integer() to fix a persistent
+          error report on OS X Tiger.
+        * Relicensed as GPLv3.
+        * Fixed POD.
+
 v1.5.2  09/21/2012
         * (RT #79696) Updated default comparison function when determining the
           difference between two data structures to handle equal numbers with
