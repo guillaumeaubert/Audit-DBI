@@ -5,7 +5,6 @@ use warnings;
 
 use Carp;
 use Data::Validate::Type;
-use Socket;
 
 
 =head1 NAME

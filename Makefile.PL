@@ -15,7 +15,6 @@ WriteMakefile
                    'File::Spec' => 0,
                    'HTML::Entities' => 0,
                    'MIME::Base64' => 0,
-                   'Socket' => 0,
                    'Storable' => 0,
                    'Template::Plugin' => 0,
                    'Template::Stash' => 0,
