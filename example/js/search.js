@@ -1,15 +1,40 @@
-var count = 0;
+/**
+ * Audit::DBI v1.5.3
+ * https://metacpan.org/release/Audit-DBI
+ *
+ * Copyright 2012 Guillaume Aubert
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 3 as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see http://www.gnu.org/licenses/
+ */
 
-/* Adds a new row in the list of criteria */
+
+/**
+ * Add a new row in the list of criteria.
+ *
+ * @param {String} invert - null to search on the criteria, not null to search on its opposite.
+ * @param {String} criteria - the type of criteria.
+ * @param {String} values - the values associated with this criteria.
+ */
+var count = 0;
 function add_new_criteria(invert, criteria, values)
 {
-	// Copy the row and set a unique ID on it
+	// Copy the row and set a unique ID on it.
 	$('#criteria').append(
 		$('#model_row').html()
 	);
 	$('#criteria .row:last').attr('id', 'row_' + count);
 	
-	// Set unique names to the various inputs
+	// Set unique names to the various inputs.
 	$('#criteria .row:last .remove input').bind(
 		'click',
 		function(e) {
@@ -17,7 +42,7 @@ function add_new_criteria(invert, criteria, values)
 		}
 	);
 	
-	// If criteria and invert are passed, set them
+	// If criteria and invert are passed, set them.
 	if (invert != null) {
 		$('#criteria .row:last .invert select').val(invert);
 	}
@@ -29,10 +54,11 @@ function add_new_criteria(invert, criteria, values)
 	}
 	
 	// Add logic to display the different "values" DIVs based on the criteria
-	// selected
+	// selected.
 	$('#criteria .row:last .criteria select').bind(
 		'change',
-		function(e) {
+		function(e)
+		{
 			var criteria = $(this).val();
 			var container = $(this).parent().parent();
 			show_values_div(container, criteria);
@@ -41,7 +67,14 @@ function add_new_criteria(invert, criteria, values)
 	count++;
 }
 
-/* Show the UI to select the values for a given criteria */
+
+/**
+ * Show the UI to select the values for a given criteria.
+ *
+ * @param {String} container - a jQuery object containing the HTML for the criteria.
+ * @param {String} criteria - the type of criteria.
+ * @param {String} values - the values associated with this criteria.
+ */
 function show_values_div(container, criteria, values)
 {
 	var value;
@@ -52,10 +85,12 @@ function show_values_div(container, criteria, values)
 	}
 	container.find('.values').css('display', 'none');
 	
+	// Display IP address search.
 	if ( criteria == 'ip_address' ) {
 		container.find('.values_ip_address').css('display', 'block');
 		container.find('.values_ip_address input').val(value[0]);
 	
+	// Display date range search.
 	} else if ( criteria == 'date_range' ) {
 		container.find('.values_date_range').css('display', 'block');
 		var from = container.find('.values_date_range input:first');
@@ -65,23 +100,28 @@ function show_values_div(container, criteria, values)
 		to.val(value[1]);
 		to.datepick();
 	
+	// Display subject type search.
 	} else if ( criteria == 'subject_type' ) {
 		container.find('.values_subject_type').css('display', 'block');
 		container.find('.values_subject_type input:first').val(value[0]);
 		container.find('.values_subject_type input:last').val(value[1]);
 	
+	// Display event search.
 	} else if ( criteria == 'event' ) {
 		container.find('.values_event').css('display', 'block');
 		container.find('.values_event input').val(value[0]);
 	
+	// Display account logged in search.
 	} else if ( criteria == 'account_logged_in' ) {
 		container.find('.values_account_logged_in').css('display', 'block');
 		container.find('.values_account_logged_in input').val(value[0]);
 	
+	// Display account affected search.
 	} else if ( criteria == 'account_affected' ) {
 		container.find('.values_account_affected').css('display', 'block');
 		container.find('.values_account_affected input').val(value[0]);
 	
+	// Display indexed data search.
 	} else if ( criteria == 'indexed_data' ) {
 		container.find('.values_indexed_data').css('display', 'block');
 		container.find('.values_indexed_data input:first').val(value[0]);
@@ -89,40 +129,50 @@ function show_values_div(container, criteria, values)
 	}
 }
 
-/* Makes a URL representing the parameters chosen in the UI */
+
+/**
+ * Make a URL representing the parameters chosen in the UI.
+ */
 function submit_search()
 {
 	var url = '?action=results';
 	jQuery.each(
 		$('#criteria .row'),
-		function() {
-			// Find the various values for the search
+		function()
+		{
+			// Find the various values for the search.
 			var invert = $(this).find('.invert select').val();
 			var criteria = $(this).find('.criteria select').val();
 			if (criteria == '') return;
 			url += '&' + escape(criteria + invert) + '=';
 			
-			// Find the specific search values
+			// Find the specific search values.
 			if ( criteria == 'ip_address' ) {
 				var ip_addresses = $(this).find('.values_ip_address input').val();
 				url += escape(ip_addresses);
+			
 			} else if ( criteria == 'date_range' ) {
 				var from = $(this).find('.values_date_range input:first').val();
 				var to = $(this).find('.values_date_range input:last').val();
 				url += escape(from) + '::' + escape(to);
+			
 			} else if ( criteria == 'subject_type' ) {
 				var type = $(this).find('.values_subject_type input:first').val();
 				var IDs = $(this).find('.values_subject_type input:last').val();
 				url += escape(type) + '::' + escape(IDs);
+			
 			} else if ( criteria == 'event' ) {
 				var event = $(this).find('.values_event input').val();
 				url += escape(event);
+			
 			} else if ( criteria == 'account_logged_in' ) {
 				var account_logged_in = $(this).find('.values_account_logged_in input').val();
 				url += escape(account_logged_in);
+			
 			} else if ( criteria == 'account_affected' ) {
 				var account_affected = $(this).find('.values_account_affected input').val();
 				url += escape(account_affected);
+			
 			} else if ( criteria == 'indexed_data' ) {
 				var type = $(this).find('.values_indexed_data input:first').val();
 				var values = $(this).find('.values_indexed_data input:last').val();
@@ -134,11 +184,14 @@ function submit_search()
 	window.location.href = url;
 }
 
-/* After loading, populate criteria with input if available */
+
+/*
+ * After loading, populate criteria with input if available.
+ */
 $(document).ready(
 	function()
 	{
-		// Check for parameters and populate the criteria accordingly
+		// Check for parameters and populate the criteria accordingly.
 		var rows_added = false;
 		var params = window.location.search.substring(1).split('&');
 		jQuery.each(
@@ -156,7 +209,7 @@ $(document).ready(
 			}
 		);
 		
-		// If no row was created, create an empty row
+		// If no row was created, create an empty row.
 		if (!rows_added) {
 			add_new_criteria();
 		}
