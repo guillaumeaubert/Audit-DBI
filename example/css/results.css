@@ -1,8 +1,16 @@
+/**
+ * Audit::DBI v1.5.3
+ * https://metacpan.org/release/Audit-DBI
+ *
+ * Copyright 2012 Guillaume Aubert
+ */
+
 html {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 9pt;
 }
 
+/* Customize code columns */
 .code {
 	min-width: 400px;
 }
@@ -12,6 +20,8 @@ html {
 	margin-top: 3px;
 	display: none;
 }
+
+/* Format the table of results */
 #results {
 	border: 1px solid black;
 }
@@ -25,3 +35,4 @@ html {
 #results tr.even {
 	background-color: #F0F0F0;
 }
+
