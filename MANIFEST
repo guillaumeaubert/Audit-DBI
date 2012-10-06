@@ -38,6 +38,7 @@ t/50-record-rate_limiting.t
 t/60-stringify_data_structure.t
 t/99-cleanup.t
 t/Event/00-load.t
+t/LocalTest.pm
 t/TT2/00-load.t
 t/Utils/00-load.t
 t/Utils/10-stringify_data_structure.t
