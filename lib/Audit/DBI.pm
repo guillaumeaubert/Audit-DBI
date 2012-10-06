@@ -750,14 +750,15 @@ sub create_tables
 	my $database_handle = $self->get_database_handle();
 	my $database_type = $database_handle->{'Driver'}->{'Name'};
 	croak 'This database type is not supported yet. Please email the maintainer of the module for help.'
-		if $database_type !~ m/^(?:SQLite|mysql|Pg)$/ix;
+		if $database_type !~ m/^(?:SQLite|mysql|Pg)$/x;
 	
-	# Create the table that will hold the audit records.
-	$database_handle->do( q|DROP TABLE IF EXISTS audit_events| )
-		if $drop_if_exist;
-	$database_handle->do(
-		$database_type eq 'SQLite'
-			? q|
+	# Database definitions.
+	my $tables_sql =
+	{
+		SQLite =>
+		{
+			audit_events =>
+			q|
 				CREATE TABLE audit_events (
 					audit_event_id INTEGER PRIMARY KEY AUTOINCREMENT,
 					logged_in_account_id varchar(48) default NULL,
@@ -773,8 +774,21 @@ sub create_tables
 					file varchar(32) NOT NULL default '',
 					line smallint(5) NOT NULL default '0'
 				)
-			|
-			: q|
+			|,
+			audit_search =>
+			q|
+				CREATE TABLE audit_search (
+					audit_search_id INTEGER PRIMARY KEY AUTOINCREMENT,
+					audit_event_id int(10) NOT NULL,
+					name varchar(48) default NULL,
+					value varchar(255) default NULL
+				)
+			|,
+		},
+		mysql  =>
+		{
+			audit_events =>
+			q|
 				CREATE TABLE audit_events (
 					audit_event_id int(10) unsigned NOT NULL auto_increment,
 					logged_in_account_id varchar(48) default NULL,
@@ -799,23 +813,9 @@ sub create_tables
 					KEY idx_subject (subject_type(6),subject_id(12))
 				)
 				ENGINE=InnoDB
-			|
-	);
-
-	# Create the table that will hold the audit search index.
-	$database_handle->do( q|DROP TABLE IF EXISTS audit_search| )
-		if $drop_if_exist;
-	$database_handle->do(
-		$database_type eq 'SQLite'
-			? q|
-				CREATE TABLE audit_search (
-					audit_search_id INTEGER PRIMARY KEY AUTOINCREMENT,
-					audit_event_id int(10) NOT NULL,
-					name varchar(48) default NULL,
-					value varchar(255) default NULL
-				)
-			|
-			: q|
+			|,
+			audit_search =>
+			q|
 				CREATE TABLE audit_search (
 					audit_search_id int(10) unsigned NOT NULL auto_increment,
 					audit_event_id int(10) unsigned NOT NULL,
@@ -827,8 +827,19 @@ sub create_tables
 					CONSTRAINT audit_event_id_ibfk_1 FOREIGN KEY (audit_event_id) REFERENCES audit_events (audit_event_id)
 				)
 				ENGINE=InnoDB
-			|
-	);
+			|,
+		},
+	};
+	
+	# Create the table that will hold the audit records.
+	$database_handle->do( q|DROP TABLE IF EXISTS audit_events| )
+		if $drop_if_exist;
+	$database_handle->do( $tables_sql->{ $database_type }->{ 'audit_events' } );
+
+	# Create the table that will hold the audit search index.
+	$database_handle->do( q|DROP TABLE IF EXISTS audit_search| )
+		if $drop_if_exist;
+	$database_handle->do( $tables_sql->{ $database_type }->{ 'audit_search' } );
 
 	return;
 }
