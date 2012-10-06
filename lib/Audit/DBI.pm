@@ -829,18 +829,72 @@ sub create_tables
 				ENGINE=InnoDB
 			|,
 		},
+		Pg     =>
+		{
+			audit_events =>
+			q|
+				CREATE TABLE audit_events (
+					audit_event_id SERIAL,
+					logged_in_account_id VARCHAR(48) DEFAULT NULL,
+					affected_account_id VARCHAR(48) DEFAULT NULL,
+					event VARCHAR(48) DEFAULT NULL,
+					event_time INTEGER DEFAULT NULL,
+					subject_type VARCHAR(48) DEFAULT NULL,
+					subject_id VARCHAR(255) DEFAULT NULL,
+					diff TEXT,
+					information TEXT,
+					ipv4_address INTEGER DEFAULT NULL,
+					created INTEGER NOT NULL,
+					file VARCHAR(32) NOT NULL DEFAULT '',
+					line SMALLINT NOT NULL DEFAULT 0,
+					PRIMARY KEY (audit_event_id)
+				)
+			|,
+			audit_search =>
+			q|
+				CREATE TABLE audit_search (
+					audit_search_id SERIAL,
+					audit_event_id INTEGER NOT NULL REFERENCES audit_events (audit_event_id),
+					name VARCHAR(48) DEFAULT NULL,
+					value VARCHAR(255) DEFAULT NULL,
+					PRIMARY KEY (audit_search_id)
+				)
+			|,
+		},
 	};
 	
 	# Create the table that will hold the audit records.
 	$database_handle->do( q|DROP TABLE IF EXISTS audit_events| )
 		if $drop_if_exist;
 	$database_handle->do( $tables_sql->{ $database_type }->{ 'audit_events' } );
-
+	
 	# Create the table that will hold the audit search index.
 	$database_handle->do( q|DROP TABLE IF EXISTS audit_search| )
 		if $drop_if_exist;
 	$database_handle->do( $tables_sql->{ $database_type }->{ 'audit_search' } );
-
+	
+	# Add indexes here if the database requires this to be a separate
+	# operation.
+	if ( $database_type eq 'Pg' )
+	{
+		my $indexes_sql =
+		[
+				q| CREATE INDEX idx_event ON audit_events (event) |,
+				q| CREATE INDEX idx_event_time ON audit_events (event_time) |,
+				q| CREATE INDEX idx_ipv4_address ON audit_events (ipv4_address) |,
+				q| CREATE INDEX idx_file_line ON audit_events (file, line) |,
+				q| CREATE INDEX idx_logged_in_account_id ON audit_events (logged_in_account_id) |,
+				q| CREATE INDEX idx_affected_account_id ON audit_events (affected_account_id) |,
+				q| CREATE INDEX idx_subject ON audit_events (subject_type, subject_id) |,
+				q| CREATE INDEX idx_name ON audit_search ( name ) |,
+				q| CREATE INDEX idx_value ON audit_search ( value ) |,
+		];
+		foreach my $index_sql ( @$indexes_sql )
+		{
+			$database_handle->do( $index_sql );
+		}
+	}
+	
 	return;
 }
 
