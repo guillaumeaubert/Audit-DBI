@@ -5,9 +5,11 @@ use warnings;
 
 use Audit::DBI;
 use Config::Tiny;
-use DBI;
 use Test::More;
 use Test::Exception;
+
+use lib 't/';
+use LocalTest;
 
 
 # Verify if Cache::Memcached::Fast is installed.
@@ -31,17 +33,7 @@ plan( skip_all => 'Memcache is not running or configured on this machine, cannot
 # Memcache is ready to use, start testing.
 plan( tests => 10 );
 
-ok(
-	my $dbh = DBI->connect(
-		'dbi:SQLite:dbname=t/test_database',
-		'',
-		'',
-		{
-			RaiseError => 1,
-		}
-	),
-	'Create connection to a SQLite database.',
-);
+my $dbh = LocalTest::ok_database_handle();
 
 ok(
 	my $audit = Audit::DBI->new(

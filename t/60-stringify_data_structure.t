@@ -5,9 +5,11 @@ use warnings;
 
 use Audit::DBI;
 use Config::Tiny;
-use DBI;
 use Test::More;
 use Test::Exception;
+
+use lib 't/';
+use LocalTest;
 
 
 eval "use Math::Currency";
@@ -16,17 +18,7 @@ plan( skip_all => "Math::Currency required for testing stringification." )
 
 plan( tests => 8 );
 
-ok(
-	my $dbh = DBI->connect(
-		'dbi:SQLite:dbname=t/test_database',
-		'',
-		'',
-		{
-			RaiseError => 1,
-		}
-	),
-	'Create connection to a SQLite database.',
-);
+my $dbh = LocalTest::ok_database_handle();
 
 ok(
 	my $audit = Audit::DBI->new(

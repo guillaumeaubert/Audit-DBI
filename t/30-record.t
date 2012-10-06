@@ -5,9 +5,11 @@ use warnings;
 
 use Audit::DBI;
 use Config::Tiny;
-use DBI;
 use Test::More tests => 8;
 use Test::Exception;
+
+use lib 't/';
+use LocalTest;
 
 
 my $DATA_FILE = 'audit_test_data.tmp';
@@ -27,17 +29,7 @@ my $test_subject_id = $config->{'main'}->{'subject_id'};
 my $test_ip_address = $config->{'main'}->{'ip_address'};
 my $random_string = $config->{'main'}->{'random_string'};
 
-ok(
-	my $dbh = DBI->connect(
-		'dbi:SQLite:dbname=t/test_database',
-		'',
-		'',
-		{
-			RaiseError => 1,
-		}
-	),
-	'Create connection to a SQLite database.',
-);
+my $dbh = LocalTest::ok_database_handle();
 
 ok(
 	my $audit = Audit::DBI->new(

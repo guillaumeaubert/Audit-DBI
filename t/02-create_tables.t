@@ -3,24 +3,15 @@
 use strict;
 use warnings;
 
+use Audit::DBI;
 use Test::Exception;
 use Test::More tests => 7;
 
-use DBI;
-use Audit::DBI;
+use lib 't/';
+use LocalTest;
 
 
-ok(
-	my $dbh = DBI->connect(
-		'dbi:SQLite:dbname=t/test_database',
-		'',
-		'',
-		{
-			RaiseError => 1,
-		}
-	),
-	'Create connection to a SQLite database.',
-);
+my $dbh = LocalTest::ok_database_handle();
 
 dies_ok(
 	sub
