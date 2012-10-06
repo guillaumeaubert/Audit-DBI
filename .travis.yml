@@ -2,3 +2,13 @@ language: perl
 perl:
   - "5.16"
   - "5.10"
+before_script:
+  - mysql -e 'CREATE DATABASE audit_dbi;'
+  - psql -c 'CREATE DATABASE audit_dbi;' -U postgres
+  - cpanm --notest DBI
+  - cpanm --notest DBD::Pg
+  - cpanm --notest DBD::mysql
+env:
+  - AUDIT_DBI_DATABASE=''
+  - AUDIT_DBI_DATABASE='DBI:mysql:database=audit_dbi;host=127.0.0.1|root|'
+  - AUDIT_DBI_DATABASE='DBI:Pg:dbname=audit_dbi;host=127.0.0.1|postgres|'
