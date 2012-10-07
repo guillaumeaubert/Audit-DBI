@@ -194,7 +194,7 @@ subtest(
 		is(
 			scalar( grep { $_->{'subject_id'} eq $limit_rate_subject_b } @$audit_events ),
 			0,
-			"The subject ID >$limit_rate_subject_c< matches no logged event.",
+			"The subject ID >$limit_rate_subject_b< matches no logged event.",
 		);
 	},
 );
