@@ -867,15 +867,19 @@ sub create_tables
 	# foreign key constraints.
 	if ( $drop_if_exist )
 	{
-		$database_handle->do( q|DROP TABLE IF EXISTS audit_search| );
-		$database_handle->do( q|DROP TABLE IF EXISTS audit_events| );
+		$database_handle->do( q|DROP TABLE IF EXISTS audit_search| )
+			|| croak 'Cannot execute SQL: ' . $database_handle->errstr();
+		$database_handle->do( q|DROP TABLE IF EXISTS audit_events| )
+			|| croak 'Cannot execute SQL: ' . $database_handle->errstr();
 	}
 	
 	# Create the table that will hold the audit records.
-	$database_handle->do( $tables_sql->{ $database_type }->{ 'audit_events' } );
+	$database_handle->do( $tables_sql->{ $database_type }->{ 'audit_events' } )
+		|| croak 'Cannot execute SQL: ' . $database_handle->errstr();
 	
 	# Create the table that will hold the audit search index.
-	$database_handle->do( $tables_sql->{ $database_type }->{ 'audit_search' } );
+	$database_handle->do( $tables_sql->{ $database_type }->{ 'audit_search' } )
+		|| croak 'Cannot execute SQL: ' . $database_handle->errstr();
 	
 	# Add indexes here if the database requires this to be a separate
 	# operation.
@@ -895,7 +899,8 @@ sub create_tables
 		];
 		foreach my $index_sql ( @$indexes_sql )
 		{
-			$database_handle->do( $index_sql );
+			$database_handle->do( $index_sql )
+				|| croak 'Cannot execute SQL: ' . $database_handle->errstr();
 		}
 	}
 	
