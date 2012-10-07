@@ -4,8 +4,10 @@ use strict;
 use warnings;
 
 use Carp;
+use Data::Dumper;
 use Data::Validate::Type;
 use Storable;
+use Test::More;
 use Try::Tiny;
 
 use Audit::DBI::Event;
@@ -955,6 +957,7 @@ Get a value from the cache.
 sub get_cache
 {
 	my ( $self, %args ) = @_;
+	diag( "Get cache: " . Dumper( \%args ) );
 	my $key = delete( $args{'key'} );
 	croak 'Invalid argument(s): ' . join( ', ', keys %args )
 		if scalar( keys %args ) != 0;
@@ -967,7 +970,9 @@ sub get_cache
 	return undef
 		if !defined( $memcache );
 	
-	return $memcache->get( $key );
+	my $value = $memcache->get( $key );
+	diag( "Cache says: " . Dumper( $value ) );
+	return $value;
 }
 
 
@@ -986,6 +991,7 @@ Set a value into the cache.
 sub set_cache
 {
 	my ( $self, %args ) = @_;
+	diag( "Set cache: " . Dumper( \%args ) );
 	my $key = delete( $args{'key'} );
 	my $value = delete( $args{'value'} );
 	my $expire_time = delete( $args{'expire_time'} );
