@@ -106,7 +106,7 @@ lives_ok(
 
 # Wait until cache expires.
 ok(
-	sleep( $limit_rate_timespan + 1 ),
+	sleep( $limit_rate_timespan + 2 ),
 	'Wait until the rate-limit time allows logging this event again.',
 );
 
