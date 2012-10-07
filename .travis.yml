@@ -2,12 +2,15 @@ language: perl
 perl:
   - "5.16"
   - "5.10"
+services:
+  - memcache
 before_script:
   - mysql -e 'CREATE DATABASE audit_dbi;'
   - psql -c 'CREATE DATABASE audit_dbi;' -U postgres
   - cpanm --notest DBI
   - cpanm --notest DBD::Pg
   - cpanm --notest DBD::mysql
+  - cpanm --notest Cache::Memcached::Fast
 env:
   - AUDIT_DBI_DATABASE=''
   - AUDIT_DBI_DATABASE='DBI:mysql:database=audit_dbi;host=127.0.0.1|root|'
