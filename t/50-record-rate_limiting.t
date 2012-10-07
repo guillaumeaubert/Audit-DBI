@@ -161,7 +161,7 @@ is(
 	scalar( @$audit_events ),
 	2,
 	'Find only two records matching the three unique subject IDs.',
-);
+) || diag( explain( $audit_events ) );
 
 # Verify that the random string for the first and last entry are found.
 subtest(
@@ -182,7 +182,7 @@ subtest(
 			"The subject ID >$limit_rate_subject_c< matches an event that was logged.",
 		);
 	},
-);
+) || diag( explain( $audit_events ) );
 
 # Verify that the random string for the middle entry is not found.
 subtest(
