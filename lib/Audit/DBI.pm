@@ -863,14 +863,18 @@ sub create_tables
 		},
 	};
 	
+	# Drop the tables in reverse order of their creation, to account for
+	# foreign key constraints.
+	if ( $drop_if_exist )
+	{
+		$database_handle->do( q|DROP TABLE IF EXISTS audit_search| );
+		$database_handle->do( q|DROP TABLE IF EXISTS audit_events| );
+	}
+	
 	# Create the table that will hold the audit records.
-	$database_handle->do( q|DROP TABLE IF EXISTS audit_events| )
-		if $drop_if_exist;
 	$database_handle->do( $tables_sql->{ $database_type }->{ 'audit_events' } );
 	
 	# Create the table that will hold the audit search index.
-	$database_handle->do( q|DROP TABLE IF EXISTS audit_search| )
-		if $drop_if_exist;
 	$database_handle->do( $tables_sql->{ $database_type }->{ 'audit_search' } );
 	
 	# Add indexes here if the database requires this to be a separate
