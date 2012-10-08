@@ -1,5 +1,13 @@
 Revision history for Audit-DBI
 
+v1.6.0  10/07/2012
+        * Fixed expiration time issue with Cache::Memcached::Fast.
+        * Added full support for PostGreSQL.
+        * Refactored tests to centralize database connections and allow testing
+          with different database types.
+        * Added config file for Travis-CI.
+        * Added comments in JS and CSS files.
+
 v1.5.3  10/01/2012
         * Added tests for Audit::DBI::Utils::ipv4_to_integer() and
           Audit::DBI::Utils::integer_to_ipv4().
