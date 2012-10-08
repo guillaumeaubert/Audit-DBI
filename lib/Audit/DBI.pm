@@ -278,7 +278,7 @@ sub record ## no critic (NamingConventions::ProhibitAmbiguousNames)
 			$self->set_cache(
 				key         => $limit_rate_unique_key,
 				value       => 1,
-				expire_time => time() + $limit_rate_timespan,
+				expire_time => $limit_rate_timespan,
 			);
 		}
 		else
