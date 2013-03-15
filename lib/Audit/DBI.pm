@@ -698,15 +698,17 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 		if scalar( @clause ) == 0;
 	
 	# Query the database.
-	my $joins = join( "\n", @join );
-	my $where = '(' . join( ') AND (', @clause ) . ')';
-	my $query = qq|
-		SELECT DISTINCT audit_events.*
-		FROM audit_events
-		$joins
-		WHERE $where
-		ORDER BY created ASC
-	|;
+	my $query = sprintf(
+		q|
+			SELECT DISTINCT audit_events.*
+			FROM audit_events
+			%s
+			WHERE %s
+			ORDER BY created ASC
+		|,
+		join( "\n", @join ),
+		'(' . join( ') AND (', @clause ) . ')',
+	);
 	
 	my $events_handle = $dbh->prepare( $query );
 	$events_handle->execute();
