@@ -70,7 +70,7 @@
    "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
-         "web" : "http://rt.cpan.org/NoAuth/ReportBug.html?Queue=audit-dbi"
+         "web" : "https://github.com/guillaumeaubert/Audit-DBI/issues"
       },
       "homepage" : "https://metacpan.org/release/Audit-DBI",
       "license" : [
