@@ -456,6 +456,16 @@ the use of a separate reader database for example, to do expensive search
 queries. If this parameter is omitted, then the database handle specified when
 calling new() is used.
 
+=item * order_by
+
+An arrayref of fields and corresponding sort orders to use for sorting. By default,
+the audit events are sorted by ascending created date.
+
+	order_by =>
+	[
+		'created' => 'DESC',
+	]
+
 =back
 
 =cut
@@ -473,14 +483,42 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 	my $logged_in = delete( $args{'logged_in'} );
 	my $affected = delete( $args{'affected'} );
 	
-	# Check remaining parameters.
+	# Retrieve non-search parameters.
 	my $dbh = delete( $args{'database_handle'} );
-	croak "Argument 'database_handle' must be a DBI object when defined"
-		if defined( $dbh ) && !Data::Validate::Type::is_instance( $dbh, class => 'DBI::db' );
+	$dbh = $self->get_database_handle()
+		if !defined( $dbh );
+	
+	my $order_by_array = delete( $args{'order_by'} );
+	$order_by_array = [ 'created', 'ASC' ]
+		if !defined( $order_by_array );
+	
+	# Check remaining parameters.
 	croak 'Invalid argument(s): ' . join( ', ', keys %args )
 		if scalar( keys %args ) != 0;
 	
 	### CLEAN PARAMETERS
+	
+	# Verify database handle argument.
+	croak "Argument 'database_handle' must be a DBI object when defined"
+		if defined( $dbh ) && !Data::Validate::Type::is_instance( $dbh, class => 'DBI::db' );
+	
+	# Verify order_by argument.
+	croak "Argument 'order_by' must be an arrayref when defined"
+		if !Data::Validate::Type::is_arrayref( $order_by_array );
+	croak "Argument 'order_by' must be a non-empty arrayref"
+		if scalar( @$order_by_array ) == 0;
+	croak "Argument 'order_by' must be an arrayref with an even number of elements"
+		if scalar( @$order_by_array ) % 2 == 1;
+	
+	my $order_by_array_copy = [ @$order_by_array ];
+	my $order_by_clauses = [];
+	while ( my ( $field, $sort_order) = splice( @$order_by_array_copy, 0, 2 ) )
+	{
+		croak "The sort order values for 'order_by' must be ASC or DESC"
+			if $sort_order !~ /^(?:ASC|DESC)$/i;
+		
+		push( @$order_by_clauses, $dbh->quote_identifier( $field ) . ' ' . uc( $sort_order ) );
+	}
 	
 	# Check that subjects are defined correctly.
 	if ( defined( $subjects ) )
@@ -561,8 +599,6 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 	### PREPARE THE QUERY
 	my @clause = ();
 	my @join = ();
-	$dbh = $self->get_database_handle()
-		if !defined( $dbh );
 	
 	# Filter by IP range.
 	if ( defined( $ip_ranges ) )
@@ -704,10 +740,11 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 			FROM audit_events
 			%s
 			WHERE %s
-			ORDER BY created ASC
+			ORDER BY %s
 		|,
 		join( "\n", @join ),
 		'(' . join( ') AND (', @clause ) . ')',
+		join( ', ', @$order_by_clauses ),
 	);
 	
 	my $events_handle = $dbh->prepare( $query );
