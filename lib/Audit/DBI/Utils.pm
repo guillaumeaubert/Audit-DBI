@@ -367,6 +367,8 @@ change (3 characters removed, and 3 added).
 		absolute => 1,
 	);
 
+Note that absolute comparison requires L<String::Diff> to be installed.
+
 =back
 
 =cut

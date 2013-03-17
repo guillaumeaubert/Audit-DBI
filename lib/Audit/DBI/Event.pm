@@ -143,6 +143,8 @@ change (3 characters removed, and 3 added).
 
 	my $diff_bytes = $audit_event->get_diff_string_bytes( absolute => 1 );
 
+Note that absolute comparison requires L<String::Diff> to be installed.
+
 =back
 
 =cut
