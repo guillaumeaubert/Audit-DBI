@@ -124,18 +124,40 @@ sub get_diff
 Return the size in bytes of all the text changes recorded inside the diff
 information stored for the event.
 
+This method can use two comparison types to calculate the size of the changes
+inside a diff:
+
+=over 4
+
+=item * Relative comparison (by default):
+
+In this case, a string change from 'TestABC' to 'TestCDE' is a 0 bytes
+change (since there is the same number of characters).
+
 	my $diff_bytes = $audit_event->get_diff_string_bytes();
+
+=item * Absolute comparison:
+
+In this case, a string change from 'TestABC' to 'TestCDE' is a 6 bytes
+change (3 characters removed, and 3 added).
+
+	my $diff_bytes = $audit_event->get_diff_string_bytes( absolute => 1 );
+
+=back
 
 =cut
 
 sub get_diff_string_bytes
 {
-	my ( $self ) = @_;
+	my ( $self, %args ) = @_;
 	
 	my $diff = $self->get_diff();
 	return 0 if !defined( $diff );
 	
-	return Audit::DBI::Utils::get_diff_string_bytes( $diff );
+	return Audit::DBI::Utils::get_diff_string_bytes(
+		$diff,
+		%args,
+	);
 }
 
 
