@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Carp;
+use Data::Dumper;
 use Data::Validate::Type;
 
 
@@ -33,6 +34,10 @@ our $VERSION = '1.6.0';
 		$data_structure_1,
 		$data_structure_2,
 		comparison_function => sub { my ( $a, $b ) = @_; $a eq $b; }, #optional
+	);
+	
+	my $diff_string_bytes = Audit::DBI::Utils::get_diff_string_bytes(
+		$differences
 	);
 
 
@@ -330,6 +335,79 @@ sub _diff_structures
 	
 	# We don't track other types for audit purposes
 	return undef;
+}
+
+
+=head2 get_diff_string_bytes()
+
+Return the size in bytes of the string differences. The argument must be a diff
+structure returned by C<Audit::DBI::Utils::diff_structures()>.
+
+	my $diff_string_bytes = Audit::DBI::Utils::get_diff_string_bytes(
+		$diff_structure
+	);
+
+=cut
+
+sub get_diff_string_bytes
+{
+	my ( $diff_structure ) = @_;
+	
+	return _get_diff_string_bytes(
+		{},
+		$diff_structure,
+	);
+}
+
+sub _get_diff_string_bytes
+{
+	my ( $cache, $diff_structure ) = @_;
+	
+	return 0
+		if !defined( $diff_structure );
+	
+	# Cache memory addresses to make sure we don't get into an infinite loop.
+	# The idea comes from Test::Deep's code.
+	return undef
+		if exists( $cache->{ "$diff_structure" } );
+	$cache->{ "$diff_structure" } = undef;
+	
+	# A hash can mean that a hash had different keys, or this is a leaf node
+	# indicating old/new data.
+	if ( Data::Validate::Type::is_hashref( $diff_structure ) )
+	{
+		# If we have an 'old' and 'new' key, then it's a leaf node.
+		if ( exists( $diff_structure->{'new'} ) && exists( $diff_structure->{'old'} ) )
+		{
+			return get_string_bytes( $diff_structure->{'new'} ) - get_string_bytes( $diff_structure->{'old'} );
+		}
+		# Otherwise, we need to explore inside the values.
+		else
+		{
+			my $diff_string_bytes = 0;
+			foreach my $value ( values %$diff_structure )
+			{
+				$diff_string_bytes += _get_diff_string_bytes( $cache, $value );
+			}
+			return $diff_string_bytes;
+		}
+	}
+	
+	# If we have an array, loop through it.
+	if ( Data::Validate::Type::is_arrayref( $diff_structure ) )
+	{
+		my $diff_string_bytes = 0;
+		foreach my $element ( @$diff_structure )
+		{
+			$diff_string_bytes += _get_diff_string_bytes( $cache, $element );
+		}
+		return $diff_string_bytes;
+	}
+	
+	# The above parses entirely a diff structure, if anything didn't match
+	# then the diff structure is not valid.
+	local $Data::Dumper::Terse = 1;
+	croak 'Invalid diff structure: ' . Dumper( $diff_structure );
 }
 
 
