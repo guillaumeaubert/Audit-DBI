@@ -7,6 +7,7 @@ WriteMakefile
   'VERSION_FROM' => 'lib/Audit/DBI.pm',
   'PREREQ_PM' => {
                    'Carp' => 0,
+                   'Class::Load' => 0,
                    'Config::Tiny' => 0,
                    'DBD::SQLite' => 0,
                    'DBI' => 0,
