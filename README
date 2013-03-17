@@ -20,7 +20,7 @@ perldoc command.
 
 You can also look for information at:
 
-    RT, CPAN's request tracker (report bugs here)
+    GitHub's request tracker (report bugs here)
         https://github.com/guillaumeaubert/Audit-DBI/issues
 
     AnnoCPAN, Annotated CPAN documentation
