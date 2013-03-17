@@ -333,6 +333,86 @@ sub _diff_structures
 }
 
 
+=head2 get_string_bytes()
+
+Return the size in bytes of all the strings contained in the data structure
+passed as argument.
+
+	my $string_bytes = Audit::DBI::Utils::get_string_bytes( 'Test' );
+	
+	my $string_bytes = Audit::DBI::Utils::get_string_bytes(
+		[ 'Test1', 'Test2' ]
+	);
+	
+	my $string_bytes = Audit::DBI::Utils::get_string_bytes(
+		{ 'Test' => 1 }
+	);
+
+Note: this function is recursive, and will explore both arrayrefs and hashrefs.
+
+=cut
+
+sub get_string_bytes
+{
+	my ( $structure ) = @_;
+	
+	return _get_string_bytes(
+		{},
+		$structure,
+	);
+}
+
+
+sub _get_string_bytes
+{
+	my ( $cache, $structure ) = @_;
+	
+	return 0
+		if !defined( $structure );
+	
+	# Use bytes pragma to calculate the byte size of the strings correctly.
+	use bytes;
+	
+	# Strings allow ending the recursion.
+	if ( Data::Validate::Type::is_string( $structure ) )
+	{
+		return bytes::length( $structure );
+	}
+	
+	# Cache memory addresses to make sure we don't get into an infinite loop.
+	# If a loop is detected in the structure, we've counted the size of one
+	# cycle at this point and we'll ignore the others.
+	return 0 if defined( $cache->{ "$structure" } );
+	$cache->{ "$structure" } = 1;
+	
+	# For hashrefs, we calculate the size of the keys and the values.
+	if ( Data::Validate::Type::is_hashref( $structure ) )
+	{
+		my $size = 0;
+		foreach my $data ( keys %$structure, values %$structure )
+		{
+			$size += _get_string_bytes( $cache, $data );
+		}
+		return $size;
+	}
+	
+	# For arrayrefs, we calculate the size of each element.
+	if ( Data::Validate::Type::is_arrayref( $structure ) )
+	{
+		my $size = 0;
+		foreach my $data ( @$structure )
+		{
+			$size += _get_string_bytes( $cache, $data );
+		}
+		return $size;
+	}
+	
+	# If it's not a string, an array, or a hash, we can't retrieve strings
+	# from the data structure so we'll ignore it.
+	return 0;
+}
+
+
 =head1 AUTHOR
 
 Guillaume Aubert, C<< <aubertg at cpan.org> >>.
