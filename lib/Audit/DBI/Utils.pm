@@ -405,36 +405,40 @@ sub _get_diff_string_bytes
 		# If we have an 'old' and 'new' key, then it's a leaf node.
 		if ( exists( $diff_structure->{'new'} ) && exists( $diff_structure->{'old'} ) )
 		{
+			# If we're performing an absolute comparison, we need to add the data removed
+			# to the data added.
 			if ( $args{'absolute'} )
 			{
-				if ( Data::Validate::Type::is_string( $diff_structure->{'new'} )
-					&& Data::Validate::Type::is_string( $diff_structure->{'old'} )
-				)
+				# If both structures are not strings, it means we can't inspect
+				# inside to do a finer grained comparison and we can only add their
+				# respective sizes.
+				return get_string_bytes( $diff_structure->{'new'} ) + get_string_bytes( $diff_structure->{'old'} )
+					if !Data::Validate::Type::is_string( $diff_structure->{'new'} )
+						|| !Data::Validate::Type::is_string( $diff_structure->{'old'} );
+				
+				# If both structures are strings however, then we can diff the
+				# strings to find out exactly how much has changed.
+				my $diff = String::Diff::diff_fully(
+					$diff_structure->{'old'},
+					$diff_structure->{'new'},
+				);
+				
+				my $diff_string_bytes = 0;
+				foreach my $line ( @{ $diff->[0] }, @{ $diff->[1] } )
 				{
-					my $diff = String::Diff::diff_fully(
-						$diff_structure->{'old'},
-						$diff_structure->{'new'},
-					);
-					
-					my $diff_string_bytes = 0;
-					foreach my $line ( @{ $diff->[0] }, @{ $diff->[1] } )
+					if ( $line->[0] eq '+' )
 					{
-						if ( $line->[0] eq '+' )
-						{
-							$diff_string_bytes += get_string_bytes( $line->[1] );
-						}
-						elsif ( $line->[0] eq '-' )
-						{
-							$diff_string_bytes += get_string_bytes( $line->[1] );
-						}
+						$diff_string_bytes += get_string_bytes( $line->[1] );
 					}
-					return $diff_string_bytes;
+					elsif ( $line->[0] eq '-' )
+					{
+						$diff_string_bytes += get_string_bytes( $line->[1] );
+					}
 				}
-				else
-				{
-					return get_string_bytes( $diff_structure->{'new'} ) + get_string_bytes( $diff_structure->{'old'} );
-				}
+				return $diff_string_bytes;
 			}
+			# If we're performing a relative comparison, we substract the data removed
+			# from the data added.
 			else
 			{
 				return get_string_bytes( $diff_structure->{'new'} ) - get_string_bytes( $diff_structure->{'old'} );
