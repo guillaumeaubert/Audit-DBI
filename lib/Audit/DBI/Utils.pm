@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Carp;
+use Class::Load;
 use Data::Dumper;
 use Data::Validate::Type;
 
@@ -343,25 +344,50 @@ sub _diff_structures
 Return the size in bytes of the string differences. The argument must be a diff
 structure returned by C<Audit::DBI::Utils::diff_structures()>.
 
+This function has two modes:
+
+=over 4
+
+=item * Relative comparison (default):
+
+In this case, a string change from 'TestABC' to 'TestCDE' is a 0 bytes
+change (since there is the same number of characters).
+
 	my $diff_string_bytes = Audit::DBI::Utils::get_diff_string_bytes(
 		$diff_structure
 	);
+
+=item * Absolute comparison:
+
+In this case, a string change from 'TestABC' to 'TestCDE' is a 6 bytes
+change (3 characters removed, and 3 added).
+
+	my $diff_string_bytes = Audit::DBI::Utils::get_diff_string_bytes(
+		$diff_structure,
+		absolute => 1,
+	);
+
+=back
 
 =cut
 
 sub get_diff_string_bytes
 {
-	my ( $diff_structure ) = @_;
+	my ( $diff_structure, %args ) = @_;
+	
+	croak 'Cannot perform string comparison without String::Diff installed, please install first and then retry'
+		if $args{'absolute'} && !Class::Load::try_load_class( 'String::Diff' );
 	
 	return _get_diff_string_bytes(
 		{},
 		$diff_structure,
+		%args,
 	);
 }
 
 sub _get_diff_string_bytes
 {
-	my ( $cache, $diff_structure ) = @_;
+	my ( $cache, $diff_structure, %args ) = @_;
 	
 	return 0
 		if !defined( $diff_structure );
@@ -379,7 +405,40 @@ sub _get_diff_string_bytes
 		# If we have an 'old' and 'new' key, then it's a leaf node.
 		if ( exists( $diff_structure->{'new'} ) && exists( $diff_structure->{'old'} ) )
 		{
-			return get_string_bytes( $diff_structure->{'new'} ) - get_string_bytes( $diff_structure->{'old'} );
+			if ( $args{'absolute'} )
+			{
+				if ( Data::Validate::Type::is_string( $diff_structure->{'new'} )
+					&& Data::Validate::Type::is_string( $diff_structure->{'old'} )
+				)
+				{
+					my $diff = String::Diff::diff_fully(
+						$diff_structure->{'old'},
+						$diff_structure->{'new'},
+					);
+					
+					my $diff_string_bytes = 0;
+					foreach my $line ( @{ $diff->[0] }, @{ $diff->[1] } )
+					{
+						if ( $line->[0] eq '+' )
+						{
+							$diff_string_bytes += get_string_bytes( $line->[1] );
+						}
+						elsif ( $line->[0] eq '-' )
+						{
+							$diff_string_bytes += get_string_bytes( $line->[1] );
+						}
+					}
+					return $diff_string_bytes;
+				}
+				else
+				{
+					return get_string_bytes( $diff_structure->{'new'} ) + get_string_bytes( $diff_structure->{'old'} );
+				}
+			}
+			else
+			{
+				return get_string_bytes( $diff_structure->{'new'} ) - get_string_bytes( $diff_structure->{'old'} );
+			}
 		}
 		# Otherwise, we need to explore inside the values.
 		else
@@ -387,7 +446,7 @@ sub _get_diff_string_bytes
 			my $diff_string_bytes = 0;
 			foreach my $value ( values %$diff_structure )
 			{
-				$diff_string_bytes += _get_diff_string_bytes( $cache, $value );
+				$diff_string_bytes += _get_diff_string_bytes( $cache, $value, %args );
 			}
 			return $diff_string_bytes;
 		}
@@ -399,7 +458,7 @@ sub _get_diff_string_bytes
 		my $diff_string_bytes = 0;
 		foreach my $element ( @$diff_structure )
 		{
-			$diff_string_bytes += _get_diff_string_bytes( $cache, $element );
+			$diff_string_bytes += _get_diff_string_bytes( $cache, $element, %args );
 		}
 		return $diff_string_bytes;
 	}
