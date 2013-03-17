@@ -1,5 +1,13 @@
 Revision history for Audit-DBI
 
+v1.7.0  3/16/2013
+        * Added optional sort argument to Audit::DBI->review().
+        * Moved request tracker from RT to GitHub.
+        * Added get_string_bytes() and get_diff_string_bytes() in
+          Audit::DBI::Utils to support calculating the size of diffs.
+        * Added Audit::DBI::Event->get_diff_string_bytes() to retrieve the size
+          of string differences in the diff stored for the audit event.
+
 v1.6.0  10/07/2012
         * Fixed expiration time issue with Cache::Memcached::Fast.
         * Added full support for PostGreSQL.

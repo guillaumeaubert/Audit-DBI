@@ -14,11 +14,11 @@ LocalTest - Test functions for L<Audit::DBI>.
 
 =head1 VERSION
 
-Version 1.6.0
+Version 1.7.0
 
 =cut
 
-our $VERSION = '1.6.0';
+our $VERSION = '1.7.0';
 
 
 =head1 SYNOPSIS
