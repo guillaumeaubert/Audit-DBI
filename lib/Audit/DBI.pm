@@ -1265,7 +1265,7 @@ the stringification feature in v1.5.0.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2012 Guillaume Aubert.
+Copyright 2010-2013 Guillaume Aubert.
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License version 3 as published by the Free
