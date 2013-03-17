@@ -5,7 +5,7 @@ use warnings;
 
 use Audit::DBI;
 use Config::Tiny;
-use Test::More tests => 12;
+use Test::More tests => 13;
 use Test::Exception;
 
 use lib 't/';
@@ -101,12 +101,18 @@ is_deeply(
 	[
 		{
 			'index' => 1,
-			'new'   => 'C',
+			'new'   => 'CDEFG',
 			'old'   => 'B',
 		}
 	],
 	'The stored diff is correct.',
 ) || diag( explain( $diff ) );
+
+is(
+	$audit_event->get_diff_string_bytes(),
+	4,
+	'The size in bytes of the string changes inside the diff is correct.',
+);
 
 my $information = $audit_event->get_information();
 is_deeply(

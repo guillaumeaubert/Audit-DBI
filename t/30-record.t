@@ -86,7 +86,7 @@ lives_ok(
 			diff         =>
 			[
 				[ 'A', 'B' ],
-				[ 'a', 'C' ],
+				[ 'a', 'CDEFG' ],
 				comparison_function => sub
 				{
 					my ( $variable_1, $variable_2 ) = @_;
