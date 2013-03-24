@@ -56,8 +56,8 @@ t/Utils/30-integer_to_ipv4.t
 t/Utils/31-ipv4_to_integer.t
 t/Utils/45-get_string_bytes.t
 t/Utils/50-get_diff_string_bytes.t
-t/manifest.t
-t/module_versions.t
-t/perlcritic.t
-t/pod-coverage.t
-t/pod.t
+xt/manifest.t
+xt/module_versions.t
+xt/perlcritic.t
+xt/pod-coverage.t
+xt/pod.t
