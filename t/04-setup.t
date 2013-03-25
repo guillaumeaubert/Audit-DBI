@@ -4,8 +4,9 @@ use strict;
 use warnings;
 
 use Config::Tiny;
-use Test::More tests => 3;
+use Test::More tests => 4;
 use Test::Exception;
+use Test::NoWarnings;
 
 
 my $DATA_FILE = 'audit_test_data.tmp';

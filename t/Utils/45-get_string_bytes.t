@@ -3,8 +3,9 @@
 use strict;
 use warnings;
 
-use Test::More;
 use Audit::DBI::Utils;
+use Test::More;
+use Test::NoWarnings;
 
 
 my $tests =
@@ -71,7 +72,7 @@ my $tests =
 	},
 ];
 
-plan( tests => 1 + scalar( @$tests ) );
+plan( tests => 2 + scalar( @$tests ) );
 
 can_ok(
 	'Audit::DBI::Utils',

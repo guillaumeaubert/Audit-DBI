@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Audit::DBI::Event;
-use Test::More tests => 1;
+use Test::More tests => 2;
+use Test::NoWarnings;
 
 
 can_ok(

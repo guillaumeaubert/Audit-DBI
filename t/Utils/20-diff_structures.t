@@ -3,9 +3,10 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
 use Audit::DBI::Utils;
 use Data::Dumper;
+use Test::More tests => 7;
+use Test::NoWarnings;
 
 
 can_ok(

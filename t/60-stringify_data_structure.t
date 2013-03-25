@@ -7,6 +7,7 @@ use Audit::DBI;
 use Config::Tiny;
 use Test::More;
 use Test::Exception;
+use Test::NoWarnings qw();
 
 use lib 't/';
 use LocalTest;
@@ -16,7 +17,7 @@ eval "use Math::Currency";
 plan( skip_all => "Math::Currency required for testing stringification." )
     if $@;
 
-plan( tests => 8 );
+plan( tests => 9 );
 
 my $dbh = LocalTest::ok_database_handle();
 
@@ -105,3 +106,4 @@ is_deeply(
 	'The information is stringified.',
 ) || diag( explain( $information ) );
 
+Test::NoWarnings::had_no_warnings();

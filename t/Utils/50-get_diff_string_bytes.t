@@ -3,8 +3,9 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
 use Audit::DBI::Utils;
+use Test::More tests => 4;
+use Test::NoWarnings;
 
 
 # 'expected_relative' is the expected return value with absolute=0.
