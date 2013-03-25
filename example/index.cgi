@@ -8,7 +8,7 @@ index.cgi - Example of audit search interface using Audit::DBI.
 =head1 DESCRIPTION
 
 Caveat: I tried to avoid having this example rely on fancy modules, in order
-to allow it to run on most machines. The drawback of cours is that it isn't
+to allow it to run on most machines. The drawback of course is that it isn't
 fancy (for example, it uses the CGI module).
 
 =cut
