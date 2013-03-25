@@ -62,7 +62,7 @@ can_ok(
 );
 
 subtest(
-	'Test absolute diffs.',
+	'Test relative diffs.',
 	sub
 	{
 		plan( tests => scalar( @$tests ) );
