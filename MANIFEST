@@ -9,7 +9,6 @@ META.json
 META.yml
 Makefile.PL
 README
-example/css/date-picker-prod.css
 example/css/images/animated-overlay.gif
 example/css/images/ui-bg_flat_0_aaaaaa_40x100.png
 example/css/images/ui-bg_flat_75_ffffff_40x100.png
@@ -26,7 +25,6 @@ example/css/images/ui-icons_888888_256x240.png
 example/css/images/ui-icons_cd0a0a_256x240.png
 example/css/jquery-ui-1.10.2.custom.css
 example/css/jquery-ui-1.10.2.custom.min.css
-example/css/jquery.datepick.css
 example/css/results.css
 example/css/search.css
 example/index.cgi
