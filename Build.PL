@@ -88,6 +88,7 @@ my $builder = $class->new(
 			],
 		},
 	},
+	recursive_test_files => 1,
 );
 
 $builder->create_build_script();

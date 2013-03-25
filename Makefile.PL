@@ -26,6 +26,9 @@ WriteMakefile
                  },
   'INSTALLDIRS' => 'site',
   'EXE_FILES' => [],
-  'PL_FILES' => {}
+  'PL_FILES' => {},
+  'test' => {
+              'TESTS' => 't/*.t t/TT2/*.t t/Event/*.t t/Utils/*.t'
+            }
 )
 ;
