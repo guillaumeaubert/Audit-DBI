@@ -1,5 +1,5 @@
 /**
- * Audit::DBI v1.7.0
+ * Audit::DBI v1.7.1
  * https://metacpan.org/release/Audit-DBI
  *
  * Copyright 2010-2013 Guillaume Aubert

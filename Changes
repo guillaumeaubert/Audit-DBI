@@ -1,5 +1,14 @@
 Revision history for Audit-DBI
 
+v1.7.1  3/24/2013
+        * Updated example to use JQuery v1.9.1 and JQueryUI.
+        * Moved release tests to xt/.
+        * Added tests for Kwalitee.
+        * Added Test::NoWarnings to all tests.
+        * Updated links to point to MetaCPAN.
+        * Updated links to point to GitHub's issue tracker.
+        * Fixed tests that depend on String::Diff.
+
 v1.7.0  3/16/2013
         * Added optional sort argument to Audit::DBI->review().
         * Moved request tracker from RT to GitHub.
