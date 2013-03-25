@@ -1,11 +1,9 @@
 [% WRAPPER wrapper.tt2 page_title='Search' %]
 	
 	<style type="text/css">
-		@import "css/jquery.datepick.css";
 		@import "css/search.css";
 	</style>
 	
-	<script type="text/javascript" src="js/jquery.datepick.min.js"></script>
 	<script type="text/javascript" src="js/search.js"></script>
 	
 	<h1>
@@ -66,11 +64,11 @@
 			<div class="values values_date_range">
 				<div class="label">from:</div>
 				<div class="data">
-					<input type="text" name="date_range_from">
+					<input type="text" name="date_range_from" class="datepicker">
 				</div>
 				<div class="label" style="clear: left;">to:</div>
 				<div class="data">
-					<input type="text" name="date_range_to">
+					<input type="text" name="date_range_to" class="datepicker">
 				</div>
 			</div>
 			
