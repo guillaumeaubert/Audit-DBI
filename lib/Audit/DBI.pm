@@ -649,7 +649,7 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 		{
 			my $clause = '(name = ' . $dbh->quote( lc( $value->{'name'} ) ) . ')';
 			
-			$clause = "($clause AND (value IN (" . join( ',', map { $dbh->quote( lc( $value ) ) } @{ $value->{'values'} } ) . ')))'
+			$clause = "($clause AND (value IN (" . join( ',', map { $dbh->quote( lc( $_ ) ) } @{ $value->{'values'} } ) . ')))'
 				if defined( $value->{'values'} ) && ( scalar( @{ $value->{'values'} } ) != 0 );
 			
 			$clause = "(NOT $clause)"
