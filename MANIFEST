@@ -50,6 +50,7 @@ t/04-setup.t
 t/30-record.t
 t/40-review.t
 t/41-review-order_by.t
+t/42-review-values.t
 t/50-record-rate_limiting.t
 t/60-stringify_data_structure.t
 t/99-cleanup.t
