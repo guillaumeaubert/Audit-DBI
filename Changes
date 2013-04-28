@@ -1,5 +1,10 @@
 Revision history for Audit-DBI
 
+v1.7.2  2013-04-27
+        * (GitHub #5) Fixed retrieving events with the 'values' argument in
+          Audit::DBI->review(). Thanks Jacob Rose!
+        * Added tests for the 'values' argument of Audit::DBI->review().
+
 v1.7.1  2013-03-24
         * Updated example to use JQuery v1.9.1 and JQueryUI.
         * Moved release tests to xt/.
