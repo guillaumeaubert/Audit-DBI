@@ -1,8 +1,13 @@
 Audit-DBI
+========
+
+[![Build Status](https://travis-ci.org/guillaumeaubert/Audit-DBI.png?branch=master)](https://travis-ci.org/guillaumeaubert/Audit-DBI)
 
 Audit data changes in your code and store searchable log records in a database.
 
+
 INSTALLATION
+------------
 
 To install this module, run the following commands:
 
@@ -11,29 +16,32 @@ To install this module, run the following commands:
 	./Build test
 	./Build install
 
+
 SUPPORT AND DOCUMENTATION
+-------------------------
 
 After installing, you can find documentation for this module with the
 perldoc command.
 
-    perldoc Audit::DBI
+	perldoc Audit::DBI
 
 You can also look for information at:
 
-    GitHub's request tracker (report bugs here)
-        https://github.com/guillaumeaubert/Audit-DBI/issues
+ * [GitHub's request tracker (report bugs here)]
+   (https://github.com/guillaumeaubert/Audit-DBI/issues)
 
-    AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Audit-DBI
+ * [AnnoCPAN, Annotated CPAN documentation]
+   (http://annocpan.org/dist/Audit-DBI)
 
-    CPAN Ratings
-        http://cpanratings.perl.org/d/Audit-DBI
+ * [CPAN Ratings]
+   (http://cpanratings.perl.org/d/Audit-DBI)
 
-    MetaCPAN
-        https://metacpan.org/release/Audit-DBI
+ * [MetaCPAN]
+   (https://metacpan.org/release/Audit-DBI)
 
 
 LICENSE AND COPYRIGHT
+---------------------
 
 Copyright (C) 2010-2013 Guillaume Aubert
 
