@@ -5,8 +5,8 @@ use warnings;
 
 use Audit::DBI;
 use Test::Exception;
-use Test::More tests => 8;
-use Test::NoWarnings;
+use Test::FailWarnings -allow_deps => 1;
+use Test::More tests => 7;
 
 use lib 't/';
 use LocalTest;

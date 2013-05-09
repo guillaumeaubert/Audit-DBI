@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 use Audit::DBI::Utils;
-use Test::More tests => 4;
-use Test::NoWarnings;
+use Test::FailWarnings -allow_deps => 1;
+use Test::More tests => 3;
 
 
 # 'expected_relative' is the expected return value with absolute=0.

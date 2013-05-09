@@ -20,8 +20,8 @@ WriteMakefile
                    'Template::Plugin' => 0,
                    'Template::Stash' => 0,
                    'Test::Exception' => 0,
+                   'Test::FailWarnings' => 0,
                    'Test::More' => '0.94',
-                   'Test::NoWarnings' => 0,
                    'Try::Tiny' => 0
                  },
   'INSTALLDIRS' => 'site',

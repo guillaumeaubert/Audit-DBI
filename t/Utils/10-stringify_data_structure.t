@@ -4,15 +4,15 @@ use strict;
 use warnings;
 
 use Audit::DBI::Utils;
+use Test::FailWarnings -allow_deps => 1;
 use Test::More;
-use Test::NoWarnings qw();
 
 
 eval "use Math::Currency";
 plan( skip_all => "Math::Currency required for testing stringification." )
     if $@;
 
-plan( tests => 5 );
+plan( tests => 4 );
 
 my $test_currency = Math::Currency->new( '10.99', 'en_US' );
 my $object_stringification_map =
@@ -99,4 +99,3 @@ is_deeply(
 	'Stringify nested array and hashes.',
 );
 
-Test::NoWarnings::had_no_warnings();

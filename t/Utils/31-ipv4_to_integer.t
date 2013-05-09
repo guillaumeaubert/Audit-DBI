@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 use Audit::DBI::Utils;
+use Test::FailWarnings -allow_deps => 1;
 use Test::More;
-use Test::NoWarnings;
 
 
 my $tests = [];
@@ -16,7 +16,7 @@ foreach my $line ( <DATA> )
 	push( @$tests, $line );
 }
 
-plan( tests => 2 + scalar( @$tests ) );
+plan( tests => 1 + scalar( @$tests ) );
 
 can_ok(
 	'Audit::DBI::Utils',

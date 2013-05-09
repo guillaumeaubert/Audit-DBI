@@ -5,8 +5,8 @@ use warnings;
 
 use Audit::DBI::Utils;
 use Data::Dumper;
-use Test::More tests => 5;
-use Test::NoWarnings;
+use Test::FailWarnings -allow_deps => 1;
+use Test::More tests => 4;
 
 
 can_ok(

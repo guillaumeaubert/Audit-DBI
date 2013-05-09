@@ -5,9 +5,9 @@ use warnings;
 
 use Audit::DBI;
 use Config::Tiny;
-use Test::More;
 use Test::Exception;
-use Test::NoWarnings qw();
+use Test::FailWarnings -allow_deps => 1;
+use Test::More;
 
 use lib 't/';
 use LocalTest;
@@ -32,7 +32,7 @@ plan( skip_all => 'Memcache is not running or configured on this machine, cannot
 	if !defined( $memcache) || !$memcache->set( 'test_audit_dbi_key', 1, time() + 10 ); 
 
 # Memcache is ready to use, start testing.
-plan( tests => 11 );
+plan( tests => 10 );
 
 my $dbh = LocalTest::ok_database_handle();
 
@@ -223,4 +223,3 @@ sub generate_random_string
 	return join('', map { $char[ rand @char ] } ( 1 .. $length ) );
 }
 
-Test::NoWarnings::had_no_warnings();
