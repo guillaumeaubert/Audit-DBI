@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Carp;
+use Data::Validate::Type;
 use Storable;
 use MIME::Base64 qw();
 
