@@ -1,5 +1,11 @@
 Revision history for Audit-DBI
 
+v1.8.0  2013-05-12
+        * IMPORTANT: Audit::DBI::TT2 is now in an independent distribution
+          instead of being bundled inside Audit-DBI. Removed module and
+          prerequisites accordingly.
+        * Fixed missing use.
+
 v1.7.3  2013-05-08
         * Updated readme to use markdown.
         * Replaced Test::NoWarnings with Test::FailWarnings.

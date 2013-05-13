@@ -16,11 +16,11 @@ Audit::DBI::Event - An event as logged by the Audit::DBI module.
 
 =head1 VERSION
 
-Version 1.7.3
+Version 1.8.0
 
 =cut
 
-our $VERSION = '1.7.3';
+our $VERSION = '1.8.0';
 
 
 =head1 SYNOPSIS
