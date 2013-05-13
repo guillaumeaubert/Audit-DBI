@@ -56,11 +56,8 @@ my $builder = $class->new(
 		'Class::Load'          => 0,
 		'Data::Dumper'         => 0,
 		'Data::Validate::Type' => 0,
-		'HTML::Entities'       => 0,
 		'MIME::Base64'         => 0,
 		'Storable'             => 0,
-		'Template::Plugin'     => 0,
-		'Template::Stash'      => 0,
 		'Try::Tiny'            => 0,
 	},
 	add_to_cleanup       =>
