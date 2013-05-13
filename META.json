@@ -51,15 +51,15 @@
    "provides" : {
       "Audit::DBI" : {
          "file" : "lib/Audit/DBI.pm",
-         "version" : "v1.7.3"
+         "version" : "v1.8.1"
       },
       "Audit::DBI::Event" : {
          "file" : "lib/Audit/DBI/Event.pm",
-         "version" : "v1.7.3"
+         "version" : "v1.8.1"
       },
       "Audit::DBI::Utils" : {
          "file" : "lib/Audit/DBI/Utils.pm",
-         "version" : "v1.7.3"
+         "version" : "v1.8.1"
       }
    },
    "release_status" : "stable",
@@ -75,5 +75,5 @@
          "url" : "https://github.com/guillaumeaubert/Audit-DBI"
       }
    },
-   "version" : "v1.7.3"
+   "version" : "v1.8.1"
 }

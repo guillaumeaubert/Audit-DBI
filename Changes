@@ -1,5 +1,8 @@
 Revision history for Audit-DBI
 
+v1.8.1  2013-05-13
+        * Fixed meta information.
+
 v1.8.0  2013-05-12
         * IMPORTANT: Audit::DBI::TT2 is now in an independent distribution
           instead of being bundled inside Audit-DBI. Removed module and
