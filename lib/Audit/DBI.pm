@@ -57,6 +57,9 @@ our $VERSION = '1.7.3';
 		[ search criteria ]
 	);
 
+To see an example of a search interface for audit events recorded by
+L<Audit::DBI>, check the C<examples/> directory of L<Audit::DBI::TT2>.
+
 
 =head1 FORCE OBJECT STRINGIFICATION
 
