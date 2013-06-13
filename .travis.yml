@@ -15,3 +15,7 @@ env:
   - AUDIT_DBI_DATABASE=''
   - AUDIT_DBI_DATABASE='DBI:mysql:database=audit_dbi;host=127.0.0.1|root|'
   - AUDIT_DBI_DATABASE='DBI:Pg:dbname=audit_dbi;host=127.0.0.1|postgres|'
+before_install:
+  cpanm -n Devel::Cover::Report::Coveralls
+script:
+  perl Build.PL && ./Build build && cover -test -report coveralls
