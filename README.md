@@ -2,6 +2,7 @@ Audit-DBI
 ========
 
 [![Build Status](https://travis-ci.org/guillaumeaubert/Audit-DBI.png?branch=master)](https://travis-ci.org/guillaumeaubert/Audit-DBI)
+[![Coverage Status](https://coveralls.io/repos/guillaumeaubert/Audit-DBI/badge.png?branch=master)](https://coveralls.io/r/guillaumeaubert/Audit-DBI?branch=master)
 
 Audit data changes in your code and store searchable log records in a database.
 
