@@ -898,7 +898,7 @@ sub create_tables
 					subject_id VARCHAR(255) DEFAULT NULL,
 					diff TEXT,
 					information TEXT,
-					ipv4_address INTEGER DEFAULT NULL,
+					ipv4_address BIGINT DEFAULT NULL,
 					created INTEGER NOT NULL,
 					file VARCHAR(32) NOT NULL DEFAULT '',
 					line SMALLINT NOT NULL DEFAULT 0,
