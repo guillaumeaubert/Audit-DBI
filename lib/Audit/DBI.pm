@@ -572,11 +572,23 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 			croak 'The inclusion/exclusion flag must be defined'
 				if !defined( $ip_range->{'include'} );
 			
+			# Verify the lower bound. If it is not in integer format,
+			# convert the IP address passed.
 			croak 'The lower bound of the IP range must be defined'
 				if !defined( $ip_range->{'begin'} );
+			$ip_range->{'begin'} = Audit::DBI::Utils::ipv4_to_integer( $ip_range->{'begin'} )
+				if $ip_range->{'begin'} =~ /\./;
+			croak "The format for the lower bound of the IP range is not valid: '$ip_range->{'begin'}'"
+				if $ip_range->{'begin'} !~ /\A\d+\z/;
 			
+			# Verify the upper bound. If it is not in integer format,
+			# convert the IP address passed.
 			croak 'The higher bound of the IP range must be defined'
 				if !defined( $ip_range->{'end'} );
+			$ip_range->{'end'} = Audit::DBI::Utils::ipv4_to_integer( $ip_range->{'end'} )
+				if $ip_range->{'end'} =~ /\./;
+			croak "The format for the upper bound of the IP range is not valid: '$ip_range->{'end'}'"
+				if $ip_range->{'end'} !~ /\A\d+\z/;
 		}
 	}
 	
