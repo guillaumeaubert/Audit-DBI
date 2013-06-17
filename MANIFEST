@@ -37,8 +37,6 @@ t/LocalTest.pm
 t/Utils/00-load.t
 t/Utils/10-stringify_data_structure.t
 t/Utils/20-diff_structures.t
-t/Utils/21-diff_structures-eq.t
-t/Utils/22-diff_structures-custom.t
 t/Utils/30-integer_to_ipv4.t
 t/Utils/31-ipv4_to_integer.t
 t/Utils/45-get_string_bytes.t
