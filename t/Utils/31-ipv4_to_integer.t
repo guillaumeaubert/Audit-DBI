@@ -27,6 +27,8 @@ can_ok(
 foreach my $test ( @$tests )
 {
 	my ( $ipv4, $integer ) = split( /\t+/, $test );
+	$integer = undef
+		if defined( $integer ) && ( $integer eq '' );
 	
 	is(
 		Audit::DBI::Utils::ipv4_to_integer(
@@ -46,3 +48,6 @@ __DATA__
 000.0.000.01	1
 255.255.255.255	4294967295
 10.0.0.7	167772167
+# Verify that an invalid format is handled properly.
+10.0.0		
+x		
