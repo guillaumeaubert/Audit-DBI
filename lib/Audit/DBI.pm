@@ -397,7 +397,8 @@ passed, they are additive, i.e. use AND to combine themselves.
 
 =item * ip_ranges
 
-Allows restricting the search to ranges of IPs. Must be given in integer format.
+Allows restricting the search to ranges of IPs. Can be given in either
+dot-decimal notation (n.n.n.n) or as an integer.
 
 =item * events
 
