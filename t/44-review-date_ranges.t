@@ -91,7 +91,7 @@ my $tests =
 		[
 			{
 				begin     => 1,          # Thu, 01 Jan 1970 00:00:01 GMT
-				end       => 2471502189, # Sun, 26 Apr 2048 08:23:09 GMT
+				end       => 1671502189, # Tue, 20 Dec 2022 02:09:49 GMT
 				include   => 1,
 			},
 		],
@@ -107,8 +107,8 @@ my $tests =
 		input     =>
 		[
 			{
-				begin     => 2471502189, # Sun, 26 Apr 2048 08:23:09 GMT
-				end       => 2571502189, # Tue, 27 Jun 2051 18:09:49 GMT
+				begin     => 1671502189, # Tue, 20 Dec 2022 02:09:49 GMT
+				end       => 1771502189, # Thu, 19 Feb 2026 11:56:29 GMT
 				include   => 1,
 			},
 		],
