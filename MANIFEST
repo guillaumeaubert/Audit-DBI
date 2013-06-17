@@ -20,6 +20,7 @@ t/00-load.t
 t/02-create_tables.t
 t/04-setup.t
 t/30-record.t
+t/31-record-ip.t
 t/40-review.t
 t/41-review-order_by.t
 t/42-review-values.t
