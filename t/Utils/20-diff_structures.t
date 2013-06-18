@@ -112,6 +112,32 @@ my $tests =
 		},
 		expected_custom  => undef,
 	},
+	{
+		name             => 'diff() with the first structure being undef.',
+		old              => undef,
+		new              => {},
+		expected_default =>
+		{
+			old => undef,
+			new => {},
+		},
+	},
+	{
+		name             => 'diff() with the second structure being undef.',
+		old              => {},
+		new              => undef,
+		expected_default =>
+		{
+			old => {},
+			new => undef,
+		},
+	},
+	{
+		name             => 'diff() with both structures being undef.',
+		old              => undef,
+		new              => undef,
+		expected_default => undef,
+	},
 ];
 
 # Comparison function to use in each case.
