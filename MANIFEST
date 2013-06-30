@@ -9,9 +9,9 @@ META.json
 META.yml
 Makefile.PL
 README.md
+example/examples.txt
 example/setup_test_database.pl
 example/test_database
-example/examples.txt
 ignore.txt
 lib/Audit/DBI.pm
 lib/Audit/DBI/Event.pm
