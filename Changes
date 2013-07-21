@@ -66,7 +66,8 @@ v1.5.1  2012-09-19
 v1.5.0  2012-09-12
         * Implemented option to convert objects into strings when calling,
           record(), to improve the readability of the diff and information
-          when calling review().
+          when calling review(). Thanks Kate Kirby for pair-programming this
+          feature with me!
 
 v1.4.3  2012-09-11
         * Fixed warning.

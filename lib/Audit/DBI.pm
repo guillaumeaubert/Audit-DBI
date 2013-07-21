@@ -1223,11 +1223,6 @@ sub insert_event
 }
 
 
-=head1 AUTHOR
-
-Guillaume Aubert, C<< <aubertg at cpan.org> >>.
-
-
 =head1 BUGS
 
 Please report any bugs or feature requests through the web interface at
@@ -1266,17 +1261,27 @@ L<https://metacpan.org/release/Audit-DBI>
 =back
 
 
+=head1 AUTHOR
+
+L<Guillaume Aubert|https://metacpan.org/author/AUBERTG>,
+C<< <aubertg at cpan.org> >>.
+
+
+=head1 CONTRIBUTORS
+
+=over 4
+
+=item * L<Nathan Gray|https://metacpan.org/author/KOLIBRIE>
+
+=item * L<Kate Kirby|https://metacpan.org/author/KATE>
+
+=back
+
+
 =head1 ACKNOWLEDGEMENTS
 
-Thanks to ThinkGeek (L<http://www.thinkgeek.com/>) and its corporate overlords
-at Geeknet (L<http://www.geek.net/>), for footing the bill while I write code
-for them!
-
-Thanks to Nathan Gray (KOLIBRIE) for implementing rate limiting in record()
-calls in v1.3.0.
-
-Thanks to Kate Kirby (KATE) for pair-programming on the implementation of
-the stringification feature in v1.5.0.
+I originally developed this project for ThinkGeek
+(L<http://www.thinkgeek.com/>). Thanks for allowing me to open-source it!
 
 
 =head1 COPYRIGHT & LICENSE
