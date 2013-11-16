@@ -27,7 +27,7 @@ subtest(
 	sub
 	{
 		plan( tests => $test_events_count );
-		
+
 		foreach my $count ( 1 .. $test_events_count )
 		{
 			lives_ok(
@@ -87,13 +87,13 @@ foreach my $test ( @$tests )
 				),
 				'Retrieve audit events.',
 			);
-			
+
 			is(
 				scalar( @$audit_events ),
 				scalar( @{ $test->{'expected'} } ),
 				'The count of audit events is correct.',
 			);
-			
+
 			is_deeply(
 				[ map { $_->{'subject_id'} } @$audit_events ],
 				$test->{'expected'},

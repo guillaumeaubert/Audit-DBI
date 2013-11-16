@@ -135,19 +135,19 @@ subtest(
 	sub
 	{
 		plan( tests => scalar( @$test_event_times ) );
-		
+
 		foreach my $event_time ( @$test_event_times )
 		{
 			lives_ok(
 				sub
 				{
 					$ENV{'REMOTE_ADDR'} = $event_time;
-					
+
 					$audit->record(
 						event        => $event,
 						subject_type => 'test_subject',
 						subject_id   => 'test_' . $event_time,
-						event_time   => $event_time, 
+						event_time   => $event_time,
 					);
 				},
 				"Write audit event with time $event_time.",
@@ -178,13 +178,13 @@ foreach my $test ( @$tests )
 				),
 				'Retrieve audit events.',
 			);
-			
+
 			is(
 				scalar( @$audit_events ),
 				scalar( @{ $test->{'expected'} } ),
 				'The count of audit events is correct.',
 			);
-			
+
 			is_deeply(
 				[ map { $_->{'subject_id'} } @$audit_events ],
 				[ map { 'test_' . $_ } @{ $test->{'expected'} } ],

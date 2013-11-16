@@ -44,10 +44,10 @@ lives_ok(
 sub generate_random_string
 {
 	my ( $length ) = @_;
-	
+
 	$length = 10
 		unless defined( $length ) && $length > 0;
-	
+
 	my @char = ( 'a'..'z', 'A'..'Z', '0'..'9' );
 	return join('', map { $char[ rand @char ] } ( 1 .. $length ) );
 }

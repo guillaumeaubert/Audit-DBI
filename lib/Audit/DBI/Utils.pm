@@ -26,17 +26,17 @@ our $VERSION = '1.8.1';
 =head1 SYNOPSIS
 
 	use Audit::DBI::Utils;
-	
+
 	my $ip_address = Audit::DBI::Utils::integer_to_ipv4( $integer );
-	
+
 	my $integer = Audit::DBI::Utils::ipv4_to_integer( $ip_address );
-	
+
 	my $differences = Audit::DBI::Utils::diff_structures(
 		$data_structure_1,
 		$data_structure_2,
 		comparison_function => sub { my ( $a, $b ) = @_; $a eq $b; }, #optional
 	);
-	
+
 	my $diff_string_bytes = Audit::DBI::Utils::get_diff_string_bytes(
 		$differences
 	);
@@ -63,14 +63,14 @@ sub stringify_data_structure
 	my $object_stringification_map = delete( $args{'object_stringification_map'} );
 	croak 'The following arguments are not valid: ' . join( ', ', keys %args )
 		if scalar( keys %args ) != 0;
-	
+
 	return _stringify_data_structure( $data_structure, $object_stringification_map );
 }
 
 sub _stringify_data_structure
 {
 	my ( $data_structure, $object_stringification_map ) = @_;
-	
+
 	if ( Data::Validate::Type::is_arrayref( $data_structure ) )
 	{
 		# If we have an array, try to stringify each of the elements.
@@ -89,7 +89,7 @@ sub _stringify_data_structure
 			next if !$data_structure->can( $stringification_method );
 			return $data_structure->$stringification_method();
 		}
-		
+
 		# If we haven't found it in our list of stringifiable objects,
 		# then we need to investigate the individual keys.
 		return
@@ -117,10 +117,10 @@ Convert a 32-bits integer representing an IP address into its IPv4 form.
 sub integer_to_ipv4
 {
 	my ( $integer ) = @_;
-	
+
 	return undef
 		if !defined( $integer ) || $integer !~ m/^\d+$/;
-	
+
 	return join( '.', map { ( $integer >> 8 * ( 3 - $_ ) ) % 256 } 0..3 );
 }
 
@@ -136,10 +136,10 @@ Convert an IPv4 address to a 32-bit integer.
 sub ipv4_to_integer
 {
 	my ( $ip_address ) = @_;
-	
+
 	return undef
 		if !defined( $ip_address );
-	
+
 	if ( my ( @bytes ) = $ip_address =~ m/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/x )
 	{
 		if ( ! grep { $_ > 255 } @bytes )
@@ -153,7 +153,7 @@ sub ipv4_to_integer
 			return $integer;
 		}
 	}
-	
+
 	# Invalid input.
 	return undef;
 }
@@ -173,7 +173,7 @@ comparison function.
 		$data_structure_1,
 		$data_structure_2,
 	);
-	
+
 	# Alternative built-in comparison function.
 	# Leaf nodes are compared using 'eq'.
 	my $diff = Audit::DBI::Utils::diff_structures(
@@ -181,7 +181,7 @@ comparison function.
 		$data_structure_2,
 		comparison_function => 'eq',
 	);
-	
+
 	# Alternative custom comparison function.
 	my $diff = Audit::DBI::Utils::diff_structures(
 		$data_structure_1,
@@ -208,18 +208,18 @@ sub diff_structures
 sub _diff_structures_comparison_eq
 {
 	my ( $variable_1, $variable_2 ) = @_;
-	
+
 	return $variable_1 eq $variable_2;
 }
 
 sub _diff_structures_comparison_default
 {
 	my ( $variable_1, $variable_2 ) = @_;
-	
+
 	# For numbers, return numerical comparison.
 	return $variable_1 == $variable_2
 		if Scalar::Util::looks_like_number( $variable_1 ) && Scalar::Util::looks_like_number( $variable_2 );
-	
+
 	# Otherwise, use exact string match.
 	return $variable_1 eq $variable_2;
 }
@@ -228,7 +228,7 @@ sub _diff_structures
 {
 	my ( $cache, $structure1, $structure2, %args ) = @_;
 	my $comparison_function = $args{'comparison_function'};
-	
+
 	# make sure the provided equality function is really a coderef
 	if ( !Data::Validate::Type::is_coderef( $comparison_function ) )
 	{
@@ -241,7 +241,7 @@ sub _diff_structures
 			$comparison_function = \&_diff_structures_comparison_default;
 		}
 	}
-	
+
 	# If one of the structure is undef, return
 	if ( !defined( $structure1 ) || !defined( $structure2 ) )
 	{
@@ -258,18 +258,18 @@ sub _diff_structures
 			};
 		}
 	}
-	
+
 	# Cache memory addresses to make sure we don't get into an infinite loop.
 	# The idea comes from Test::Deep's code.
 	return undef
 		if exists( $cache->{ "$structure1" }->{ "$structure2" } );
 	$cache->{ "$structure1" }->{ "$structure2" } = undef;
-	
+
 	# Hashes (including hashes blessed as objects)
 	if ( Data::Validate::Type::is_hashref( $structure1 ) && Data::Validate::Type::is_hashref( $structure2 ) )
 	{
 		my %union_keys = map { $_ => undef } ( keys %$structure1, keys %$structure2 );
-		
+
 		my %tmp = ();
 		foreach ( keys %union_keys )
 		{
@@ -282,10 +282,10 @@ sub _diff_structures
 			$tmp{$_} = $diff
 				if defined( $diff );
 		}
-		
+
 		return ( scalar( keys %tmp ) != 0 ? \%tmp : undef );
 	}
-	
+
 	# If the structures have different references, since we've ruled out blessed
 	# hashes (objects) above (that could have a different blessing with the same
 	# actual content), return the elements
@@ -297,7 +297,7 @@ sub _diff_structures
 			new => $structure2
 		};
 	}
-	
+
 	# Simple scalars, compare and return
 	if ( ref( $structure1 ) eq '' )
 	{
@@ -308,7 +308,7 @@ sub _diff_structures
 				new => $structure2
 			};
 	}
-	
+
 	# Arrays
 	if ( Data::Validate::Type::is_arrayref( $structure1 ) )
 	{
@@ -323,17 +323,17 @@ sub _diff_structures
 				%args,
 			);
 			next unless defined( $diff );
-			
+
 			$diff->{'index'} = $i;
 			push(
 				@tmp,
 				$diff
 			);
 		}
-		
+
 		return ( scalar( @tmp ) != 0 ? \@tmp : undef );
 	}
-	
+
 	# We don't track other types for audit purposes
 	return undef;
 }
@@ -376,10 +376,10 @@ Note that absolute comparison requires L<String::Diff> to be installed.
 sub get_diff_string_bytes
 {
 	my ( $diff_structure, %args ) = @_;
-	
+
 	croak 'Cannot perform string comparison without String::Diff installed, please install first and then retry'
 		if $args{'absolute'} && !Class::Load::try_load_class( 'String::Diff' );
-	
+
 	return _get_diff_string_bytes(
 		{},
 		$diff_structure,
@@ -390,16 +390,16 @@ sub get_diff_string_bytes
 sub _get_diff_string_bytes
 {
 	my ( $cache, $diff_structure, %args ) = @_;
-	
+
 	return 0
 		if !defined( $diff_structure );
-	
+
 	# Cache memory addresses to make sure we don't get into an infinite loop.
 	# The idea comes from Test::Deep's code.
 	return undef
 		if exists( $cache->{ "$diff_structure" } );
 	$cache->{ "$diff_structure" } = undef;
-	
+
 	# A hash can mean that a hash had different keys, or this is a leaf node
 	# indicating old/new data.
 	if ( Data::Validate::Type::is_hashref( $diff_structure ) )
@@ -417,14 +417,14 @@ sub _get_diff_string_bytes
 				return get_string_bytes( $diff_structure->{'new'} ) + get_string_bytes( $diff_structure->{'old'} )
 					if !Data::Validate::Type::is_string( $diff_structure->{'new'} )
 						|| !Data::Validate::Type::is_string( $diff_structure->{'old'} );
-				
+
 				# If both structures are strings however, then we can diff the
 				# strings to find out exactly how much has changed.
 				my $diff = String::Diff::diff_fully(
 					$diff_structure->{'old'},
 					$diff_structure->{'new'},
 				);
-				
+
 				my $diff_string_bytes = 0;
 				foreach my $line ( @{ $diff->[0] }, @{ $diff->[1] } )
 				{
@@ -457,7 +457,7 @@ sub _get_diff_string_bytes
 			return $diff_string_bytes;
 		}
 	}
-	
+
 	# If we have an array, loop through it.
 	if ( Data::Validate::Type::is_arrayref( $diff_structure ) )
 	{
@@ -468,7 +468,7 @@ sub _get_diff_string_bytes
 		}
 		return $diff_string_bytes;
 	}
-	
+
 	# The above parses entirely a diff structure, if anything didn't match
 	# then the diff structure is not valid.
 	local $Data::Dumper::Terse = 1;
@@ -482,11 +482,11 @@ Return the size in bytes of all the strings contained in the data structure
 passed as argument.
 
 	my $string_bytes = Audit::DBI::Utils::get_string_bytes( 'Test' );
-	
+
 	my $string_bytes = Audit::DBI::Utils::get_string_bytes(
 		[ 'Test1', 'Test2' ]
 	);
-	
+
 	my $string_bytes = Audit::DBI::Utils::get_string_bytes(
 		{ 'Test' => 1 }
 	);
@@ -498,7 +498,7 @@ Note: this function is recursive, and will explore both arrayrefs and hashrefs.
 sub get_string_bytes
 {
 	my ( $structure ) = @_;
-	
+
 	return _get_string_bytes(
 		{},
 		$structure,
@@ -509,25 +509,25 @@ sub get_string_bytes
 sub _get_string_bytes
 {
 	my ( $cache, $structure ) = @_;
-	
+
 	return 0
 		if !defined( $structure );
-	
+
 	# Use bytes pragma to calculate the byte size of the strings correctly.
 	use bytes;
-	
+
 	# Strings allow ending the recursion.
 	if ( Data::Validate::Type::is_string( $structure ) )
 	{
 		return bytes::length( $structure );
 	}
-	
+
 	# Cache memory addresses to make sure we don't get into an infinite loop.
 	# If a loop is detected in the structure, we've counted the size of one
 	# cycle at this point and we'll ignore the others.
 	return 0 if defined( $cache->{ "$structure" } );
 	$cache->{ "$structure" } = 1;
-	
+
 	# For hashrefs, we calculate the size of the keys and the values.
 	if ( Data::Validate::Type::is_hashref( $structure ) )
 	{
@@ -538,7 +538,7 @@ sub _get_string_bytes
 		}
 		return $size;
 	}
-	
+
 	# For arrayrefs, we calculate the size of each element.
 	if ( Data::Validate::Type::is_arrayref( $structure ) )
 	{
@@ -549,7 +549,7 @@ sub _get_string_bytes
 		}
 		return $size;
 	}
-	
+
 	# If it's not a string, an array, or a hash, we can't retrieve strings
 	# from the data structure so we'll ignore it.
 	return 0;

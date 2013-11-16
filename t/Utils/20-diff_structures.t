@@ -149,7 +149,7 @@ my $comparison_functions =
 	'custom'  => sub
 	{
 		my ( $variable_1, $variable_2 ) = @_;
-		
+
 		return lc( $variable_1 ) eq lc( $variable_2 );
 	},
 };
@@ -171,13 +171,13 @@ foreach my $comparison_function ( keys %$comparison_functions )
 		sub
 		{
 			plan( tests => scalar ( @$tests ) );
-			
+
 			foreach my $test ( @$tests )
 			{
 				my $expected = exists( $test->{ 'expected_' . $comparison_function } )
 					? $test->{ 'expected_' . $comparison_function }
 					: $test->{ 'expected_default' };
-				
+
 				is_deeply(
 					Audit::DBI::Utils::diff_structures(
 						$test->{'old'},

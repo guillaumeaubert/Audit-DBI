@@ -27,7 +27,7 @@ can_ok(
 foreach my $test ( @$tests )
 {
 	my ( $integer, $ipv4 ) = split( /\t+/, $test );
-	
+
 	is(
 		Audit::DBI::Utils::integer_to_ipv4(
 			$integer,

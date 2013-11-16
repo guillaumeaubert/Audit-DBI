@@ -19,7 +19,7 @@ dies_ok(
 	{
 		# Disable printing errors out since we expect the test to fail.
 		local $dbh->{'PrintError'} = 0;
-		
+
 		$dbh->selectrow_array( q| SELECT * FROM audit_events | );
 	},
 	'The audit_events table does not exist yet.',
@@ -30,7 +30,7 @@ dies_ok(
 	{
 		# Disable printing errors out since we expect the test to fail.
 		local $dbh->{'PrintError'} = 0;
-		
+
 		$dbh->selectrow_array( q| SELECT * FROM audit_search | );
 	},
 	'The audit_search table does not exist yet.',

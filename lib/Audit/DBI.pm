@@ -29,15 +29,15 @@ our $VERSION = '1.8.1';
 =head1 SYNOPSIS
 
 	use Audit::DBI;
-	
+
 	# Create the audit object.
 	my $audit = Audit::DBI->new(
 		database_handle => $dbh,
 	);
-	
+
 	# Create the necessary tables.
 	$audit->create_tables();
-	
+
 	# Record an audit event.
 	$audit->record(
 		event               => $event,
@@ -51,7 +51,7 @@ our $VERSION = '1.8.1';
 		file                => $file,
 		line                => $line,
 	);
-	
+
 	# Search audit events.
 	my $audit_events = $audit->review(
 		[ search criteria ]
@@ -127,7 +127,7 @@ sub new
 	my $memcache = delete( $args{'memcache'} );
 	croak 'The following arguments are not valid: ' . join( ', ', keys %args )
 		if scalar( keys %args ) != 0;
-	
+
 	# Check parameters.
 	croak "Argument 'database_handle' is mandatory and must be a DBI object"
 		if !Data::Validate::Type::is_instance( $dbh, class => 'DBI::db' );
@@ -256,7 +256,7 @@ sub record ## no critic (NamingConventions::ProhibitAmbiguousNames)
 	my $limit_rate_timespan = delete( $args{'limit_rate_timespan'} );
 	my $limit_rate_unique_key = delete( $args{'limit_rate_unique_key'} );
 	my $dbh = $self->get_database_handle();
-	
+
 	# Check required parameters.
 	foreach my $arg ( qw( event subject_type subject_id ) )
 	{
@@ -269,7 +269,7 @@ sub record ## no critic (NamingConventions::ProhibitAmbiguousNames)
 		if defined $limit_rate_unique_key && length $limit_rate_unique_key == 0;
 	croak('Both "limit_rate_timespan" and "limit_rate_unique_key" must be defined.')
 		if defined $limit_rate_timespan != defined $limit_rate_unique_key;
-	
+
 	# Rate limiting.
 	if ( defined( $limit_rate_timespan ) )
 	{
@@ -288,10 +288,10 @@ sub record ## no critic (NamingConventions::ProhibitAmbiguousNames)
 			return 1;
 		}
 	}
-	
+
 	# Record the time (unless it was already passed in).
 	$args{'event_time'} ||= time();
-	
+
 	# Store the file and line of the caller, unless they were passed in.
 	if ( !defined( $args{'file'} ) || !defined( $args{'line'} ) )
 	{
@@ -302,9 +302,9 @@ sub record ## no critic (NamingConventions::ProhibitAmbiguousNames)
 		$args{'line'} = $line
 			if !defined( $args{'line'} );
 	}
-	
+
 	my $audit_event = $self->insert_event( \%args );
-	
+
 	return defined( $audit_event )
 		? 1
 		: 0;
@@ -477,7 +477,7 @@ the audit events are sorted by ascending created date.
 sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 {
 	my ( $self, %args ) = @_;
-	
+
 	# Retrieve search parameters.
 	my $subjects = delete( $args{'subjects'} );
 	my $values = delete( $args{'values'} );
@@ -486,26 +486,26 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 	my $events = delete( $args{'events'} );
 	my $logged_in = delete( $args{'logged_in'} );
 	my $affected = delete( $args{'affected'} );
-	
+
 	# Retrieve non-search parameters.
 	my $dbh = delete( $args{'database_handle'} );
 	$dbh = $self->get_database_handle()
 		if !defined( $dbh );
-	
+
 	my $order_by_array = delete( $args{'order_by'} );
 	$order_by_array = [ 'created', 'ASC' ]
 		if !defined( $order_by_array );
-	
+
 	# Check remaining parameters.
 	croak 'Invalid argument(s): ' . join( ', ', keys %args )
 		if scalar( keys %args ) != 0;
-	
+
 	### CLEAN PARAMETERS
-	
+
 	# Verify database handle argument.
 	croak "Argument 'database_handle' must be a DBI object when defined"
 		if defined( $dbh ) && !Data::Validate::Type::is_instance( $dbh, class => 'DBI::db' );
-	
+
 	# Verify order_by argument.
 	croak "Argument 'order_by' must be an arrayref when defined"
 		if !Data::Validate::Type::is_arrayref( $order_by_array );
@@ -513,66 +513,66 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 		if scalar( @$order_by_array ) == 0;
 	croak "Argument 'order_by' must be an arrayref with an even number of elements"
 		if scalar( @$order_by_array ) % 2 == 1;
-	
+
 	my $order_by_array_copy = [ @$order_by_array ];
 	my $order_by_clauses = [];
 	while ( my ( $field, $sort_order) = splice( @$order_by_array_copy, 0, 2 ) )
 	{
 		croak "The sort order values for 'order_by' must be ASC or DESC"
 			if $sort_order !~ /^(?:ASC|DESC)$/i;
-		
+
 		push( @$order_by_clauses, $dbh->quote_identifier( $field ) . ' ' . uc( $sort_order ) );
 	}
-	
+
 	# Check that subjects are defined correctly.
 	if ( defined( $subjects ) )
 	{
 		croak 'The parameter "subjects" must be an arrayref'
 			if !Data::Validate::Type::is_arrayref( $subjects );
-		
+
 		foreach my $subject ( @$subjects )
 		{
 			croak 'The subject type must be defined'
 				if !defined( $subject->{'type'} );
-			
+
 			croak 'The inclusion/exclusion flag must be defined'
 				if !defined( $subject->{'include'} );
-			
+
 			croak 'If defined, the IDs for a given subject time must be in an array'
 				if defined( $subject->{'ids'} ) && !Data::Validate::Type::is_arrayref( $subject->{'ids'} );
 		}
 	}
-	
+
 	# Check that values are defined correctly.
 	if ( defined( $values ) )
 	{
 		croak 'The parameter "values" must be an arrayref'
 			if !Data::Validate::Type::is_arrayref( $values );
-		
+
 		foreach my $value ( @$values )
 		{
 			croak 'The name must be defined'
 				if !defined( $value->{'name'} );
-			
+
 			croak 'The inclusion/exclusion flag must be defined'
 				if !defined( $value->{'include'} );
-			
+
 			croak 'The values for a given name must be in an arrayref'
 				if !defined( $value->{'values'} ) || !Data::Validate::Type::is_arrayref( $value->{'values'} );
 		}
 	}
-	
+
 	# Check that the IP ranges are defined correctly
 	if ( defined( $ip_ranges ) )
 	{
 		croak 'The parameter "ip_ranges" must be an arrayref'
 			if !Data::Validate::Type::is_arrayref( $ip_ranges );
-		
+
 		foreach my $ip_range ( @$ip_ranges )
 		{
 			croak 'The inclusion/exclusion flag must be defined'
 				if !defined( $ip_range->{'include'} );
-			
+
 			# Verify the lower bound. If it is not in integer format,
 			# convert the IP address passed.
 			croak 'The lower bound of the IP range must be defined'
@@ -581,7 +581,7 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 				if $ip_range->{'begin'} =~ /\./;
 			croak "The format for the lower bound of the IP range is not valid: '$ip_range->{'begin'}'"
 				if $ip_range->{'begin'} !~ /\A\d+\z/;
-			
+
 			# Verify the upper bound. If it is not in integer format,
 			# convert the IP address passed.
 			croak 'The higher bound of the IP range must be defined'
@@ -592,30 +592,30 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 				if $ip_range->{'end'} !~ /\A\d+\z/;
 		}
 	}
-	
+
 	# Check that the date range is defined correctly
 	if ( defined( $date_ranges ) )
 	{
 		croak 'The parameter "date_ranges" must be an arrayref'
 			if !Data::Validate::Type::is_arrayref( $date_ranges );
-		
+
 		foreach my $date_range ( @$date_ranges )
 		{
 			croak 'The inclusion/exclusion flag must be defined'
 				if !defined( $date_range->{'include'} );
-			
+
 			croak 'The lower bound of the date range must be defined'
 				if !defined( $date_range->{'begin'} );
-			
+
 			croak 'The higher bound of the date range must be defined'
 				if !defined( $date_range->{'end'} );
 		}
 	}
-	
+
 	### PREPARE THE QUERY
 	my @clause = ();
 	my @join = ();
-	
+
 	# Filter by IP range.
 	if ( defined( $ip_ranges ) )
 	{
@@ -625,17 +625,17 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 			my $begin = $dbh->quote( $ip_range->{'begin'} );
 			my $end = $dbh->quote( $ip_range->{'end'} );
 			my $clause = "((ipv4_address >= $begin) AND (ipv4_address <= $end))";
-			
+
 			$clause = "(NOT $clause)"
 				if !$ip_range->{'include'};
-			
+
 			push( @or_clause, $clause );
 		}
-		
+
 		push( @clause, '(' . join( ') OR (', @or_clause ) . ')' )
 			if scalar( @or_clause ) != 0;
 	}
-	
+
 	# Filter by subject_type and subject_id.
 	if ( defined( $subjects ) )
 	{
@@ -646,17 +646,17 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 
 			$clause = "($clause AND (subject_id IN (" . join( ',', map { $dbh->quote( $_ ) } @{ $subject->{'ids'} } ) . ')))'
 				if defined( $subject->{'ids'} ) && ( scalar( @{ $subject->{'ids'} } ) != 0 );
-			
+
 			$clause = "(NOT $clause)"
 				if !$subject->{'include'};
-			
+
 			push( @or_clause, $clause );
 		}
-		
+
 		push( @clause, '(' . join( ') OR (', @or_clause ) . ')' )
 			if scalar( @or_clause ) != 0;
 	}
-	
+
 	# Filter using the manually set key/value pairs.
 	if ( defined( $values ) )
 	{
@@ -664,23 +664,23 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 		foreach my $value ( @$values )
 		{
 			my $clause = '(name = ' . $dbh->quote( lc( $value->{'name'} ) ) . ')';
-			
+
 			$clause = "($clause AND (value IN (" . join( ',', map { $dbh->quote( lc( $_ ) ) } @{ $value->{'values'} } ) . ')))'
 				if defined( $value->{'values'} ) && ( scalar( @{ $value->{'values'} } ) != 0 );
-			
+
 			$clause = "(NOT $clause)"
 				if !$value->{'include'};
-			
+
 			push( @or_clause, $clause );
 		}
-		
+
 		if ( scalar( @or_clause ) != 0 )
 		{
 			push( @join, 'LEFT JOIN audit_search USING(audit_event_id)' );
 			push( @clause, '(' . join( ') OR (', @or_clause ) . ')' );
 		}
 	}
-	
+
 	# Filter by date range.
 	if ( defined( $date_ranges ) )
 	{
@@ -690,17 +690,17 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 			my $begin = $dbh->quote( $date_range->{'begin'} );
 			my $end = $dbh->quote( $date_range->{'end'} );
 			my $clause = "((event_time >= $begin) AND (event_time <= $end))";
-			
+
 			$clause = "(NOT $clause)"
 				if !$date_range->{'include'};
-			
+
 			push( @or_clause, $clause );
 		}
-		
+
 		push( @clause, '(' . join( ') OR (', @or_clause ) . ')' )
 			if scalar( @or_clause ) != 0;
 	}
-	
+
 	# Filter using events.
 	if ( defined( $events ) )
 	{
@@ -711,11 +711,11 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 			my $operand = ( $data->{'include'} ? '=' : '!=' );
 			push( @or_clause, "( event $operand $event)" );
 		}
-		
+
 		push( @clause, '(' . join( ') OR (', @or_clause ) . ')' )
 			if scalar( @or_clause ) != 0;
 	}
-	
+
 	# Filter using account IDs.
 	if ( defined( $logged_in ) )
 	{
@@ -726,7 +726,7 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 			my $operand = ( $data->{'include'} ? '=' : '!=' );
 			push( @or_clause, "( logged_in_account_id $operand $account_id)" );
 		}
-		
+
 		push( @clause, '(' . join( ') OR (', @or_clause ) . ')' )
 			if scalar( @or_clause ) != 0;
 	}
@@ -739,16 +739,16 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 			my $operand = ( $data->{'include'} ? '=' : '!=' );
 			push( @or_clause, "( affected_account_id $operand $account_id)" );
 		}
-		
+
 		push( @clause, '(' . join( ') OR (', @or_clause ) . ')' )
 			if scalar( @or_clause ) != 0;
 	}
-	
+
 	# Make sure we have at least one criteria, else something went wrong when we
 	# checked the parameters.
 	croak 'No filtering criteria was created, cannot search'
 		if scalar( @clause ) == 0;
-	
+
 	# Query the database.
 	my $query = sprintf(
 		q|
@@ -762,10 +762,10 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 		'(' . join( ') AND (', @clause ) . ')',
 		join( ', ', @$order_by_clauses ),
 	);
-	
+
 	my $events_handle = $dbh->prepare( $query );
 	$events_handle->execute();
-	
+
 	my $results = [];
 	while ( my $result = $events_handle->fetchrow_hashref() )
 	{
@@ -774,7 +774,7 @@ sub review ## no critic (Subroutines::ProhibitExcessComplexity)
 			Audit::DBI::Event->new( data => $result ),
 		);
 	}
-	
+
 	return $results;
 }
 
@@ -796,17 +796,17 @@ sub create_tables
 	my $drop_if_exist = delete( $args{'drop_if_exist'} );
 	croak 'Invalid argument(s): ' . join( ', ', keys %args )
 		if scalar( keys %args ) != 0;
-	
+
 	# Defaults.
 	$drop_if_exist = 0
 		unless defined( $drop_if_exist ) && $drop_if_exist;
-	
+
 	# Check database type.
 	my $database_handle = $self->get_database_handle();
 	my $database_type = $database_handle->{'Driver'}->{'Name'};
 	croak 'This database type is not supported yet. Please email the maintainer of the module for help.'
 		if $database_type !~ m/^(?:SQLite|mysql|Pg)$/x;
-	
+
 	# Database definitions.
 	my $tables_sql =
 	{
@@ -917,7 +917,7 @@ sub create_tables
 			|,
 		},
 	};
-	
+
 	# Drop the tables in reverse order of their creation, to account for
 	# foreign key constraints.
 	if ( $drop_if_exist )
@@ -927,15 +927,15 @@ sub create_tables
 		$database_handle->do( q|DROP TABLE IF EXISTS audit_events| )
 			|| croak 'Cannot execute SQL: ' . $database_handle->errstr();
 	}
-	
+
 	# Create the table that will hold the audit records.
 	$database_handle->do( $tables_sql->{ $database_type }->{ 'audit_events' } )
 		|| croak 'Cannot execute SQL: ' . $database_handle->errstr();
-	
+
 	# Create the table that will hold the audit search index.
 	$database_handle->do( $tables_sql->{ $database_type }->{ 'audit_search' } )
 		|| croak 'Cannot execute SQL: ' . $database_handle->errstr();
-	
+
 	# Add indexes here if the database requires this to be a separate
 	# operation.
 	if ( $database_type eq 'Pg' )
@@ -958,7 +958,7 @@ sub create_tables
 				|| croak 'Cannot execute SQL: ' . $database_handle->errstr();
 		}
 	}
-	
+
 	return;
 }
 
@@ -1013,15 +1013,15 @@ sub get_cache
 	my $key = delete( $args{'key'} );
 	croak 'Invalid argument(s): ' . join( ', ', keys %args )
 		if scalar( keys %args ) != 0;
-	
+
 	# Check parameters.
 	croak 'The parameter "key" is mandatory'
 		if !defined( $key ) || $key !~ /\w/;
-	
+
 	my $memcache = $self->get_memcache();
 	return undef
 		if !defined( $memcache );
-	
+
 	return $memcache->get( $key );
 }
 
@@ -1046,18 +1046,18 @@ sub set_cache
 	my $expire_time = delete( $args{'expire_time'} );
 	croak 'Invalid argument(s): ' . join( ', ', keys %args )
 		if scalar( keys %args ) != 0;
-	
+
 	# Check parameters.
 	croak 'The parameter "key" is mandatory'
 		if !defined( $key ) || $key !~ /\w/;
-	
+
 	my $memcache = $self->get_memcache();
 	return
 		if !defined( $memcache );
-	
+
 	$memcache->set( $key, $value, $expire_time )
 		|| carp 'Failed to set cache with key >' . $key . '<';
-	
+
 	return;
 }
 
@@ -1091,7 +1091,7 @@ sub insert_event
 {
 	my ( $self, $data ) = @_;
 	my $dbh = $self->get_database_handle();
-	
+
 	return try
 	{
 		# Make a diff if applicable based on the content of 'diff'
@@ -1099,10 +1099,10 @@ sub insert_event
 		{
 			croak 'The "diff" argument must be an arrayref'
 				if !Data::Validate::Type::is_arrayref( $data->{'diff'} );
-			
+
 			# Preserve the diff arguments.
 			my ( $old_data, $new_data, @diff_args ) = @{ $data->{'diff'} };
-			
+
 			# Force-stringify objects in the data structures, for
 			# the objects listed in $FORCE_OBJECT_STRINGIFICATION.
 			$old_data = Audit::DBI::Utils::stringify_data_structure(
@@ -1113,14 +1113,14 @@ sub insert_event
 				data_structure             => $new_data,
 				object_stringification_map => $FORCE_OBJECT_STRINGIFICATION,
 			);
-			
+
 			# Determine the differences between the two structures.
 			my $diff = Audit::DBI::Utils::diff_structures(
 				$old_data,
 				$new_data,
 				@diff_args,
 			);
-			
+
 			# If there's a diff, freeze and encode it for storage
 			# in the database.
 			$data->{'diff'} = defined( $diff )
@@ -1131,10 +1131,10 @@ sub insert_event
 				)
 				: undef;
 		}
-		
+
 		# Clean input.
 		my $search_data = delete( $data->{'search_data'} );
-		
+
 		# Freeze the free-form data as soon as it is set on the object, in case it's
 		# a complex data structure with references that may be updated before the
 		# insert in the database.
@@ -1149,13 +1149,13 @@ sub insert_event
 				)
 			);
 		}
-		
+
 		# Set defaults.
 		$data->{'created'} = time();
 		$data->{'ipv4_address'} = Audit::DBI::Utils::ipv4_to_integer( $ENV{'REMOTE_ADDR'} );
 		$data->{'event_time'} = time()
 			if !defined( $data->{'event_time'} );
-		
+
 		# Insert.
 		my @fields = ();
 		my @values = ();
@@ -1182,10 +1182,10 @@ sub insert_event
 			'audit_events',
 			'audit_event_id',
 		);
-		
+
 		# Create an object to return.
 		my $audit_event = Audit::DBI::Event->new( data => $data );
-		
+
 		# Add the search data
 		if ( defined( $search_data ) )
 		{
@@ -1195,13 +1195,13 @@ sub insert_event
 					VALUES( ?, ?, ? )
 				|
 			);
-			
+
 			foreach my $name ( keys %$search_data )
 			{
 				my $values = $search_data->{ $name };
 				$values = [ $values ] # Force array
 					if !Data::Validate::Type::is_arrayref( $values );
-				
+
 				foreach my $value ( @$values )
 				{
 					$sth->execute(
@@ -1212,7 +1212,7 @@ sub insert_event
 				}
 			}
 		}
-		
+
 		return $audit_event;
 	}
 	catch

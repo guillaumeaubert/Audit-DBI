@@ -67,7 +67,7 @@ subtest(
 	sub
 	{
 		plan( tests => scalar( @$tests ) );
-		
+
 		foreach my $test ( @$tests )
 		{
 			is(
@@ -84,13 +84,13 @@ SKIP:
 	eval "use String::Diff";
 	skip( 'String::Diff needs to be installed to test absolute diffs.', 1 )
 		if $@;
-	
+
 	subtest(
 		'Test absolute diffs.',
 		sub
 		{
 			plan( tests => scalar( @$tests ) );
-			
+
 			foreach my $test ( @$tests )
 			{
 				is(

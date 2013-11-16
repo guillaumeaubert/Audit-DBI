@@ -29,7 +29,7 @@ my $memcache = Cache::Memcached::Fast->new(
 );
 
 plan( skip_all => 'Memcache is not running or configured on this machine, cannot test rate limiting' )
-	if !defined( $memcache) || !$memcache->set( 'test_audit_dbi_key', 1, time() + 10 ); 
+	if !defined( $memcache) || !$memcache->set( 'test_audit_dbi_key', 1, time() + 10 );
 
 # Memcache is ready to use, start testing.
 plan( tests => 10 );
@@ -181,13 +181,13 @@ subtest(
 	sub
 	{
 		plan( tests => 2 );
-		
+
 		is(
 			scalar( grep { $_->{'subject_id'} eq $limit_rate_subject_a } @$audit_events ),
 			1,
 			"The subject ID >$limit_rate_subject_a< matches an event that was logged.",
 		);
-		
+
 		is(
 			scalar( grep { $_->{'subject_id'} eq $limit_rate_subject_c } @$audit_events ),
 			1,
@@ -202,7 +202,7 @@ subtest(
 	sub
 	{
 		plan( tests => 1 );
-		
+
 		is(
 			scalar( grep { $_->{'subject_id'} eq $limit_rate_subject_b } @$audit_events ),
 			0,
@@ -215,10 +215,10 @@ subtest(
 sub generate_random_string
 {
 	my ( $length ) = @_;
-	
+
 	$length = 10
 		unless defined( $length ) && $length > 0;
-	
+
 	my @char = ( 'a'..'z', 'A'..'Z', '0'..'9' );
 	return join('', map { $char[ rand @char ] } ( 1 .. $length ) );
 }
