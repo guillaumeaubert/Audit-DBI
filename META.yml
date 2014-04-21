@@ -3,21 +3,21 @@ abstract: 'Audit data changes in your code and store searchable log records in a
 author:
   - 'Guillaume Aubert <aubertg@cpan.org>'
 build_requires:
-  Config::Tiny: 0
-  DBD::SQLite: 0
-  DBI: 0
-  File::Spec: 0
-  Test::Exception: 0
-  Test::FailWarnings: 0
-  Test::More: 0.94
+  Config::Tiny: '0'
+  DBD::SQLite: '0'
+  DBI: '0'
+  File::Spec: '0'
+  Test::Exception: '0'
+  Test::FailWarnings: '0'
+  Test::More: '0.94'
 configure_requires:
-  Module::Build: 0
+  Module::Build: '0'
 dynamic_config: 1
-generated_by: 'Module::Build version 0.4005, CPAN::Meta::Converter version 2.131560'
-license: open_source
+generated_by: 'Module::Build version 0.4205, CPAN::Meta::Converter version 2.140640'
+license: gpl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: 1.4
+  version: '1.4'
 name: Audit-DBI
 no_index:
   file:
@@ -33,14 +33,14 @@ provides:
     file: lib/Audit/DBI/Utils.pm
     version: v1.8.1
 requires:
-  Carp: 0
-  Class::Load: 0
-  Data::Dumper: 0
-  Data::Validate::Type: 0
-  MIME::Base64: 0
-  Storable: 0
-  Try::Tiny: 0
-  perl: 5.006
+  Carp: '0'
+  Class::Load: '0'
+  Data::Dumper: '0'
+  Data::Validate::Type: '0'
+  MIME::Base64: '0'
+  Storable: '0'
+  Try::Tiny: '0'
+  perl: '5.006'
 resources:
   bugtracker: https://github.com/guillaumeaubert/Audit-DBI/issues
   homepage: https://metacpan.org/release/Audit-DBI
