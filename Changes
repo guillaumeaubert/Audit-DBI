@@ -1,5 +1,12 @@
 Revision history for Audit-DBI
 
+v1.8.2  2014-04-20
+        - Added automatic conversion of IP addresses.
+        - Added many test to improve code coverage.
+        - Refactored tests.
+        - Fixed "package version matches dist version" for CPANTS.
+        - Fixed license declared in meta files.
+
 v1.8.1  2013-05-13
         - Fixed meta information.
 
