@@ -3,29 +3,28 @@ require 5.006;
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
-  'NAME' => 'Audit::DBI',
-  'VERSION_FROM' => 'lib/Audit/DBI.pm',
-  'PREREQ_PM' => {
-                   'Carp' => 0,
-                   'Class::Load' => 0,
-                   'Config::Tiny' => 0,
-                   'DBD::SQLite' => 0,
-                   'DBI' => 0,
-                   'Data::Dumper' => 0,
-                   'Data::Validate::Type' => 0,
-                   'File::Spec' => 0,
-                   'MIME::Base64' => 0,
-                   'Storable' => 0,
-                   'Test::Exception' => 0,
-                   'Test::FailWarnings' => 0,
-                   'Test::More' => '0.94',
-                   'Try::Tiny' => 0
-                 },
-  'INSTALLDIRS' => 'site',
-  'EXE_FILES' => [],
-  'PL_FILES' => {},
   'test' => {
               'TESTS' => 't/*.t t/Event/*.t t/Utils/*.t'
-            }
+            },
+  'PL_FILES' => {},
+  'INSTALLDIRS' => 'site',
+  'NAME' => 'Audit::DBI',
+  'EXE_FILES' => [],
+  'VERSION_FROM' => 'lib/Audit/DBI.pm',
+  'PREREQ_PM' => {
+                   'Try::Tiny' => 0,
+                   'Test::Exception' => 0,
+                   'Test::FailWarnings' => 0,
+                   'DBD::SQLite' => 0,
+                   'Data::Dumper' => 0,
+                   'Class::Load' => 0,
+                   'Storable' => 0,
+                   'Carp' => 0,
+                   'Test::More' => '0.94',
+                   'MIME::Base64' => 0,
+                   'Data::Validate::Type' => 0,
+                   'Config::Tiny' => 0,
+                   'DBI' => 0
+                 }
 )
 ;

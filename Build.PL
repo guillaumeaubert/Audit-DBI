@@ -44,7 +44,6 @@ my $builder = $class->new(
 		'Config::Tiny'         => 0,
 		'DBD::SQLite'          => 0,
 		'DBI'                  => 0,
-		'File::Spec'           => 0,
 		'Test::Exception'      => 0,
 		'Test::FailWarnings'   => 0,
 		'Test::More'           => 0.94,
