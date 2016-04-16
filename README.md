@@ -4,7 +4,7 @@ Audit-DBI
 [![Build Status](https://travis-ci.org/guillaumeaubert/Audit-DBI.svg?branch=master)](https://travis-ci.org/guillaumeaubert/Audit-DBI)
 [![Coverage Status](https://coveralls.io/repos/guillaumeaubert/Audit-DBI/badge.svg?branch=master)](https://coveralls.io/r/guillaumeaubert/Audit-DBI?branch=master)
 [![CPAN](https://img.shields.io/cpan/v/Audit-DBI.svg)](https://metacpan.org/release/Audit-DBI)
-[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://opensource.org/licenses/GPL-3.0)
+[![License](https://img.shields.io/badge/license-Perl%205-blue.svg)](http://dev.perl.org/licenses/)
 
 Audit data changes in your code and store searchable log records in a database.
 
@@ -47,16 +47,11 @@ You can also look for information at:
 LICENSE AND COPYRIGHT
 ---------------------
 
-Copyright (C) 2010-2016 Guillaume Aubert
+Copyright (C) 2010-2016 Guillaume Aubert.
 
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License version 3 as published by the Free
-Software Foundation.
+This code is free software; you can redistribute it and/or modify it under the
+same terms as Perl 5 itself.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program. If not, see http://www.gnu.org/licenses/
-
+PARTICULAR PURPOSE. See the LICENSE file for more details.

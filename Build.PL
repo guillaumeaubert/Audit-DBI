@@ -36,7 +36,7 @@ my $class = Module::Build->subclass(
 
 my $builder = $class->new(
 	module_name          => 'Audit::DBI',
-	license              => 'GPL_3',
+	license              => 'Perl_5',
 	dist_author          => q{Guillaume Aubert <aubertg@cpan.org>},
 	dist_version_from    => 'lib/Audit/DBI.pm',
 	build_requires       =>
