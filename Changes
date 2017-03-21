@@ -1,5 +1,10 @@
 Revision history for Audit-DBI
 
+v1.9.0  2017-03-20
+        - Relicensed under Perl 5 terms.
+        - Cleaned up dependencies.
+        - Improved test coverage.
+
 v1.8.2  2014-04-20
         - Added automatic conversion of IP addresses.
         - Added many test to improve code coverage.

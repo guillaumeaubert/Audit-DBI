@@ -19,11 +19,11 @@ Audit::DBI - Audit data changes in your code and store searchable log records in
 
 =head1 VERSION
 
-Version 1.8.2
+Version 1.9.0
 
 =cut
 
-our $VERSION = '1.8.2';
+our $VERSION = '1.9.0';
 
 
 =head1 SYNOPSIS

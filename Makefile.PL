@@ -3,28 +3,28 @@ require 5.006;
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
+  'PREREQ_PM' => {
+                   'Test::FailWarnings' => 0,
+                   'Storable' => 0,
+                   'Class::Load' => 0,
+                   'DBD::SQLite' => 0,
+                   'Data::Validate::Type' => 0,
+                   'Try::Tiny' => 0,
+                   'Test::More' => '0.94',
+                   'Config::Tiny' => 0,
+                   'MIME::Base64' => 0,
+                   'Data::Dumper' => 0,
+                   'DBI' => 0,
+                   'Test::Exception' => 0,
+                   'Carp' => 0
+                 },
   'test' => {
-              'TESTS' => 't/*.t t/Event/*.t t/Utils/*.t'
+              'TESTS' => 't/*.t t/Utils/*.t t/Event/*.t'
             },
-  'PL_FILES' => {},
-  'INSTALLDIRS' => 'site',
-  'NAME' => 'Audit::DBI',
   'EXE_FILES' => [],
   'VERSION_FROM' => 'lib/Audit/DBI.pm',
-  'PREREQ_PM' => {
-                   'Try::Tiny' => 0,
-                   'Test::Exception' => 0,
-                   'Test::FailWarnings' => 0,
-                   'DBD::SQLite' => 0,
-                   'Data::Dumper' => 0,
-                   'Class::Load' => 0,
-                   'Storable' => 0,
-                   'Carp' => 0,
-                   'Test::More' => '0.94',
-                   'MIME::Base64' => 0,
-                   'Data::Validate::Type' => 0,
-                   'Config::Tiny' => 0,
-                   'DBI' => 0
-                 }
+  'NAME' => 'Audit::DBI',
+  'INSTALLDIRS' => 'site',
+  'PL_FILES' => {}
 )
 ;

@@ -24,13 +24,13 @@ no_index:
 provides:
   Audit::DBI:
     file: lib/Audit/DBI.pm
-    version: v1.8.2
+    version: v1.9.0
   Audit::DBI::Event:
     file: lib/Audit/DBI/Event.pm
-    version: v1.8.2
+    version: v1.9.0
   Audit::DBI::Utils:
     file: lib/Audit/DBI/Utils.pm
-    version: v1.8.2
+    version: v1.9.0
 requires:
   Carp: '0'
   Class::Load: '0'
@@ -45,4 +45,4 @@ resources:
   homepage: https://metacpan.org/release/Audit-DBI
   license: http://dev.perl.org/licenses/
   repository: https://github.com/guillaumeaubert/Audit-DBI
-version: v1.8.2
+version: v1.9.0
